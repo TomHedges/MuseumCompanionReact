@@ -1,0 +1,3 @@
+Copyright asserted - Tom Hedges - 2018
+
+More detail to follow...
