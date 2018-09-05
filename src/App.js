@@ -1,29 +1,15 @@
 import React from 'react';
+import * as Constants from './components/constants/Constants.js';
 import logo from './logo.svg';
 import './App.css';
-
-const SEARCH_SOURCE_SELECT = "search_source_select"
-const SEARCH_INPUTBOX = "search_inputbox"
-const SEARCH_BUTTON = "search_button"
-const SOURCES = {
-  V_AND_A: "v_and_a",
-  BRITMUS: "british_museum",
-  OTHER: "other"
-}
-const dataRequestStatus = {
-  NONE_MADE: "none",
-  LOADING: "loading",
-  SUCCESS: "success",
-  FAILURE: "failure",
-}
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedSource: SOURCES.V_AND_A,
+      selectedSource: Constants.SOURCES.V_AND_A,
       lastSearchSource : null,
-      dataRequestStatus: dataRequestStatus.NONE_MADE,
+      dataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
       objectData: [],
       objectID: null,
       errorMessage: null,
@@ -35,15 +21,15 @@ class App extends React.Component {
 
   handleClick(event) {
     switch (event.target.id) {
-      case SEARCH_BUTTON:
+      case Constants.SEARCH_BUTTON:
         if (this.state.objectID) {
           this.setState({
-            dataRequestStatus: dataRequestStatus.LOADING,
+            dataRequestStatus: Constants.DATA_REQUEST_STATUS.LOADING,
             errorMessage: null,
             lastSearchSource: this.state.selectedSource,
           });
           this.buildUrl();
-        } //else there is no search term, so no action. oin future, have button disabled until there is a term.
+        } //else there is no search term, so no action. In future, have button disabled until there is a term.
       break;
 
       default:
@@ -53,13 +39,13 @@ class App extends React.Component {
 
   handleChange(event) {
     switch (event.target.id) {
-      case SEARCH_INPUTBOX:
+      case Constants.SEARCH_INPUTBOX:
         this.setState({
           objectID: event.target.value
         })
       break;
 
-      case SEARCH_SOURCE_SELECT:
+      case Constants.SEARCH_SOURCE_SELECT:
         this.setState({
           selectedSource: event.target.value
         });
@@ -74,15 +60,15 @@ class App extends React.Component {
     let finalURL = null;
 
     switch (this.state.selectedSource) {
-      case SOURCES.V_AND_A:
-      finalURL = "https://www.vam.ac.uk/api/json/museumobject/" + this.state.objectID
+      case Constants.SOURCES.V_AND_A:
+      finalURL = Constants.V_AND_A.URL_ARTEFACT_ROOT + this.state.objectID
       break;
 
-      case SOURCES.BRITMUS:
-      finalURL = "https://www.brit-mus-api.com/need-this-url/" + this.state.objectID + "/root"
+      case Constants.SOURCES.BRITISH_MUSEUM:
+      finalURL = Constants.BRITISH_MUSEUM.URL_ARTEFACT_ROOT + this.state.objectID + "/root"
       break;
 
-      case SOURCES.OTHER:
+      case Constants.SOURCES.OTHER:
       finalURL = "https://otherurl.com/" + this.state.objectID
       break;
 
@@ -99,7 +85,7 @@ class App extends React.Component {
       .then(
         (result) => {
           this.setState({
-            dataRequestStatus: dataRequestStatus.SUCCESS,
+            dataRequestStatus: Constants.DATA_REQUEST_STATUS.SUCCESS,
             objectData: result,
           });
         },
@@ -108,7 +94,7 @@ class App extends React.Component {
         // exceptions from actual bugs in components.
         (error) => {
           this.setState({
-            dataRequestStatus: dataRequestStatus.FAILURE,
+            dataRequestStatus: Constants.DATA_REQUEST_STATUS.FAILURE,
             errorMessage: error.message,
           });
         }
@@ -126,13 +112,13 @@ class App extends React.Component {
         <p className = "App-intro" >
           Search for an object by ID! eg. O61949 or O234
         </p>
-        <select id={SEARCH_SOURCE_SELECT} value={this.state.selectedSource} onChange={this.handleChange}>
-          <option value={SOURCES.V_AND_A}>V&A Museum</option>
-          <option value={SOURCES.BRITMUS}>British Museum</option>
-          <option value={SOURCES.OTHER}>Other</option>
+        <select id={Constants.SEARCH_SOURCE_SELECT} value={this.state.selectedSource} onChange={this.handleChange}>
+          <option value={Constants.SOURCES.V_AND_A}>V&A Museum</option>
+          <option value={Constants.SOURCES.BRITISH_MUSEUM}>British Museum</option>
+          <option value={Constants.SOURCES.OTHER}>Other</option>
         </select>
-        <input type="text" id={SEARCH_INPUTBOX} onChange={this.handleChange} />
-        <button className="button" id={SEARCH_BUTTON} onClick={this.handleClick}>Load Artefact</button>
+        <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={this.handleChange} />
+        <button className="button" id={Constants.SEARCH_BUTTON} onClick={this.handleClick}>Load Artefact</button>
       </div>
       <div className="external-data">
         <ArtefactDetails dataRequestStatus={this.state.dataRequestStatus} source={this.state.lastSearchSource} objectData={this.state.objectData} errorMessage={this.state.errorMessage}/>
@@ -150,19 +136,19 @@ class App extends React.Component {
         objectText: 'Text still to be set up...',
       }
 
-      if (this.props.dataRequestStatus === dataRequestStatus.SUCCESS) {
+      if (this.props.dataRequestStatus === Constants.DATA_REQUEST_STATUS.SUCCESS) {
         switch (this.props.source) {
-          case SOURCES.V_AND_A:
+          case Constants.SOURCES.V_AND_A:
             fields.objectName = (!this.props.objectData[0].fields.title) ? "Unknown" : this.props.objectData[0].fields.title;
             if (this.props.objectData[0].fields.primary_image_id) {
               fields.objectPrimaryImageURL = 'http://media.vam.ac.uk/media/thira/collection_images/' + this.props.objectData[0].fields.primary_image_id.substring(0, 6) + '/' + this.props.objectData[0].fields.primary_image_id + '.jpg'
             };
           break;
 
-          case SOURCES.BRITMUS:
+          case Constants.SOURCES.BRITISH_MUSEUM:
           break;
 
-          case SOURCES.OTHER:
+          case Constants.SOURCES.OTHER:
           break;
 
           default:
@@ -183,19 +169,19 @@ class App extends React.Component {
       let return_value = null;
 
       switch (this.props.dataRequestStatus) {
-        case dataRequestStatus.NONE_MADE:   
+        case Constants.DATA_REQUEST_STATUS.NONE_MADE:   
           return_value = null;
         break;
 
-        case dataRequestStatus.LOADING:   
+        case Constants.DATA_REQUEST_STATUS.LOADING:   
           return_value = <p>Loading...</p>;
         break;
 
-        case dataRequestStatus.FAILURE:
+        case Constants.DATA_REQUEST_STATUS.FAILURE:
           return_value = <p>Error: {this.props.errorMessage}</p>
         break;
 
-        case dataRequestStatus.SUCCESS:
+        case Constants.DATA_REQUEST_STATUS.SUCCESS:
           return_value = (<div>
               <ArtefactName objectName={objectName} />
               <ArtefactSlug objectSlug={objectSlug}/>
