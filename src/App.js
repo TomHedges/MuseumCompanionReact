@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Constants from './constants/Constants.js';
-import ArtefactDetails from './components/ArtefactDetails.js'
+import ArtefactDetails from './components/ArtefactDetails.js';
+import getData from './dataAccess/RemoteDataAccess.js';
 import logo from './logo.svg';
 import './App.css';
 
@@ -21,6 +22,7 @@ class App extends React.Component {
   }
 
   handleClick(event) {
+    //alert('test constant structure: ' + Object.keys(Constants.SOURCES).length);
     switch (event.target.id) {
       case Constants.SEARCH_BUTTON:
         if (this.state.objectID) {
@@ -29,7 +31,31 @@ class App extends React.Component {
             errorMessage: null,
             lastSearchSource: this.state.selectedSource,
           });
-          this.buildUrl();
+          //this.buildUrl();
+          getData(Constants.REQUEST_TYPE.SINGLE_ARTEFACT, this.state.selectedSource, this.state.objectID)
+            .then(tempArray => {
+              this.setState({
+                dataRequestStatus: tempArray[0],
+                objectData: tempArray[1],
+                errorMessage: tempArray[2],
+                lastSearchSource: this.state.selectedSource,
+              });
+
+              /*
+              if (tempArray[0] === Constants.DATA_REQUEST_STATUS.SUCCESS) {
+                  this.setState({
+                    dataRequestStatus: tempArray[0],
+                    objectData: tempArray[1],
+                  });
+                } else if (tempArray[0] === Constants.DATA_REQUEST_STATUS.FAILURE) {
+                  this.setState({
+                    dataRequestStatus: tempArray[0],
+                    errorMessage: tempArray[1],
+                  });
+                }
+                */
+              }
+            )
         } //else there is no search term, so no action. In future, have button disabled until there is a term.
       break;
 
@@ -57,6 +83,7 @@ class App extends React.Component {
     }
   }
 
+  /*
   buildUrl() {
     let finalURL = null;
 
@@ -101,6 +128,7 @@ class App extends React.Component {
         }
       )
   }
+  */
 
   render() {
     return (
@@ -113,13 +141,15 @@ class App extends React.Component {
         <p className = "App-intro" >
           Search for an object by ID! eg. O61949 or O234
         </p>
-        <select id={Constants.SEARCH_SOURCE_SELECT} value={this.state.selectedSource} onChange={this.handleChange}>
-          <option value={Constants.SOURCES.V_AND_A}>V&A Museum</option>
-          <option value={Constants.SOURCES.BRITISH_MUSEUM}>British Museum</option>
-          <option value={Constants.SOURCES.OTHER}>Other</option>
-        </select>
-        <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={this.handleChange} />
-        <button className="button" id={Constants.SEARCH_BUTTON} onClick={this.handleClick}>Load Artefact</button>
+        <div className = "Search-Controls">
+          <select id={Constants.SEARCH_SOURCE_SELECT} value={this.state.selectedSource} onChange={this.handleChange}>
+            <option value={Constants.SOURCES.V_AND_A}>V&A Museum</option>
+            <option value={Constants.SOURCES.BRITISH_MUSEUM}>British Museum</option>
+            <option value={Constants.SOURCES.OTHER}>Other</option>
+          </select>
+          <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={this.handleChange} />
+          <button className="button" id={Constants.SEARCH_BUTTON} onClick={this.handleClick}>Load Artefact</button>
+        </div>
       </div>
       <div className="external-data">
         <ArtefactDetails dataRequestStatus={this.state.dataRequestStatus} source={this.state.lastSearchSource} objectData={this.state.objectData} errorMessage={this.state.errorMessage}/>
