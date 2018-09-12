@@ -1,92 +1,54 @@
 import React from 'react';
 import * as Constants from '../constants/Constants.js';
 
-
-
-    //alert('test constant structure: ' + Object.keys(Constants.SOURCES).length);
-    
-
-
 class SearchControls extends React.Component {
-    getFields() {
-      let fields = {
-        objectName: null,
-        objectSlug: 'Slug still to be set up...',
-        objectPrimaryImageURL: null,
-        objectText: 'Text still to be set up...',
-      }
+    render() {
+        return (
+            //<React.Fragment>
+            <div className = "Search-controls">
+                <SourceOption value={this.props.selected_source} onChange={this.props.onChange} />
+                <SearchInputbox onChange={this.props.onChange} />
+                <SearchButton onClick={this.props.onClick} />
+            </div>
+            //</React.Fragment>
+        );
+    }
+}
 
-      if (this.props.dataRequestStatus === Constants.DATA_REQUEST_STATUS.SUCCESS) {
-        switch (this.props.source) {
-          case Constants.SOURCES.V_AND_A:
-            fields.objectName = (!this.props.objectData[0].fields.title) ? "Unknown" : this.props.objectData[0].fields.title;
-            if (this.props.objectData[0].fields.primary_image_id) {
-              fields.objectPrimaryImageURL = 'http://media.vam.ac.uk/media/thira/collection_images/' + this.props.objectData[0].fields.primary_image_id.substring(0, 6) + '/' + this.props.objectData[0].fields.primary_image_id + '.jpg'
-            };
-          break;
+class SourceOption extends React.Component {
+    //const source_values = Object.keys(Constants.SOURCES);
+    //const source_descriptions = Object.keys(Constants.SOURCE_DESCRIPTIONS);
+    //const options = source_values.map((source_value) =>
+    //      <option key={source_value.toString()} value={source_value.toString()}>{source_value}</option>
+    //);
 
-          case Constants.SOURCES.BRITISH_MUSEUM:
-          break;
+    render() {
+        var options = [];
+        var source_values = Object.values(Constants.SOURCES);
+        var source_descriptions = Object.values(Constants.SOURCE_DESCRIPTIONS);
 
-          case Constants.SOURCES.OTHER:
-          break;
-
-          default:
-          break;
+        for (var i = 0; i < source_values.length; i++) {
+            options.push(<option key={source_values[i]} value={source_values[i]}>{source_descriptions[i]}</option>);
         }
-      }
 
-      return fields;
+        return (
+            <select id={Constants.SEARCH_SOURCE_SELECT} value={this.props.value} onChange={this.props.onChange}>
+                {options}
+            </select>
+        );
     }
+}
 
-    render () {
-      let fields = this.getFields();
-      let objectName = fields.objectName;
-      let objectSlug = fields.objectSlug;
-      let objectPrimaryImageURL = fields.objectPrimaryImageURL;
-      let objectText = fields.objectText;
+function SearchInputbox(props) {
+    return (
+        <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={props.onChange} />
+    );
+}
 
-      let return_value = null;
+function SearchButton(props) {
+    return (
+        <button className="button" id={Constants.SEARCH_BUTTON} onClick={props.onClick}>Load Artefact</button>
+    );
+}
 
-      switch (this.props.dataRequestStatus) {
-        case Constants.DATA_REQUEST_STATUS.NONE_MADE:   
-          return_value = null;
-        break;
-
-        case Constants.DATA_REQUEST_STATUS.LOADING:   
-          return_value = <p>Loading...</p>;
-        break;
-
-        case Constants.DATA_REQUEST_STATUS.FAILURE:
-          return_value = <p>Error: {this.props.errorMessage}</p>
-        break;
-
-        case Constants.DATA_REQUEST_STATUS.SUCCESS:
-          return_value = (<div>
-              <ArtefactName objectName={objectName} />
-              <ArtefactSlug objectSlug={objectSlug}/>
-              <ArtefactPrimaryImage objectPrimaryImageURL={objectPrimaryImageURL}/>
-              <ArtefactText objectText={objectText}/>
-          </div>);
-        break;
-
-        default:
-          return_value = <p>Error: This message should never be seen</p>
-        break;
-      }
-        
-        return return_value;
-
-
-    <select id={Constants.SEARCH_SOURCE_SELECT} value={this.props.selectedSource} onChange={this.props.handleChange}>
-        <option value={Constants.SOURCES.V_AND_A}>V&A Museum</option>
-        <option value={Constants.SOURCES.BRITISH_MUSEUM}>British Museum</option>
-        <option value={Constants.SOURCES.OTHER}>Other</option>
-    </select>
-    <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={this.handleChange} />
-    <button className="button" id={Constants.SEARCH_BUTTON} onClick={this.handleClick}>Load Artefact</button>
-
-    }
-  }
-
-  export default SearchControls
+export default SearchControls

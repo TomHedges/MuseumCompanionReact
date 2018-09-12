@@ -13,11 +13,12 @@ export const SOURCES = {
   BRITISH_MUSEUM: "british_museum",
   OTHER: "other",
 }
-export const SOURCES_DESCRIPTIONS = {
+export const SOURCE_DESCRIPTIONS = {
   V_AND_A: "V&A Museum",
   BRITISH_MUSEUM: "British Museum",
   OTHER: "Other... TBC...",
 }
+export const DEFAULT_SOURCE = SOURCES.V_AND_A
 
 export const SEARCH_SOURCE_SELECT = "search_source_select"
 export const SEARCH_INPUTBOX = "search_inputbox"
