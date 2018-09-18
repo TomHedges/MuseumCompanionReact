@@ -13,15 +13,15 @@ class App extends React.Component {
       selectedSource: Constants.DEFAULT_SOURCE,
       lastSearchSource : null,
       dataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
-      objectData: [],
+      rawObjectData: [],
+      processedObjectData: [],
       objectID: null,
       errorMessage: null,
     }
-
-    this.handleClick = this.handleClick.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+      this.handleClick = this.handleClick.bind(this);
+      this.handleChange = this.handleChange.bind(this);
   }
-
+ 
   handleClick(event) {
     switch (event.target.id) {
       case Constants.SEARCH_BUTTON:
@@ -32,22 +32,23 @@ class App extends React.Component {
             lastSearchSource: this.state.selectedSource,
           });
           getData(Constants.REQUEST_TYPE.SINGLE_ARTEFACT, this.state.selectedSource, this.state.objectID)
-            .then(tempArray => {
+            .then(returnData => {
               this.setState({
-                dataRequestStatus: tempArray[0],
-                objectData: tempArray[1],
-                errorMessage: tempArray[2],
+                dataRequestStatus: returnData[Constants.DATA_REQUEST_RESULT],
+                errorMessage: returnData[Constants.DATA_REQUEST_ERROR],
+                rawObjectData: returnData[Constants.DATA_REQUEST_RAW_DATA],
+                processedObjectData: returnData[Constants.DATA_REQUEST_PROCESSED_DATA],
                 lastSearchSource: this.state.selectedSource,
               });
             })
         } //else there is no search term, so no action. In future, have button disabled until there is a term.
       break;
 
-      default:
+    default:
       break;
-    }
+     }
   }
-
+ 
   handleChange(event) {
     switch (event.target.id) {
       case Constants.SEARCH_INPUTBOX:
@@ -55,7 +56,7 @@ class App extends React.Component {
           objectID: event.target.value
         })
       break;
-
+ 
       case Constants.SEARCH_SOURCE_SELECT:
         this.setState({
           selectedSource: event.target.value
@@ -66,7 +67,7 @@ class App extends React.Component {
       break;
     }
   }
-
+ 
   render() {
     return (
       <div className = "App">
@@ -76,15 +77,15 @@ class App extends React.Component {
       </div>
       <div className = "controls">
         <p className = "App-intro" >
-          Search for an object by ID! eg. O61949 or O234
+          Search for an artefact by ID! eg. O61949 or O234 or (BNB) 015268415
         </p>
         <SearchControls selected_source={this.state.selectedSource} onChange={this.handleChange} onClick={this.handleClick}/>
       </div>
       <div className="external-data">
-        <ArtefactDetails dataRequestStatus={this.state.dataRequestStatus} source={this.state.lastSearchSource} objectData={this.state.objectData} errorMessage={this.state.errorMessage}/>
+        <ArtefactDetails dataRequestStatus={this.state.dataRequestStatus} source={this.state.lastSearchSource} objectData={this.state.processedObjectData} errorMessage={this.state.errorMessage}/>
       </div>
     </div>);
     }
-  }
+}
 
 export default App
