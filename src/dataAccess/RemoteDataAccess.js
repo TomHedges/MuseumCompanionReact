@@ -3,7 +3,7 @@ import * as Constants from '../constants/Constants.js';
 async function getData(requestType, dataSource, searchTerm) {
     var url = await buildUrl(requestType, dataSource, searchTerm);
     var rawData = await makeRemoteDataRequest(url);
-    var returnData = await formatRemoteData(dataSource, rawData);
+    var returnData = await formatRemoteData(requestType, dataSource, rawData);
     return returnData;
 }
 
@@ -12,6 +12,7 @@ async function buildUrl(requestType, dataSource, searchTerm) {
 
     switch (requestType) {
         case Constants.REQUEST_TYPE.SINGLE_ARTEFACT:
+            console.log('Retrieving Single Artefact');
             await import('../institution_functions/Institution_Functions_' + dataSource + '.js')
                 .then(({getSingleArtefactURL}) => {
                     finalURL = getSingleArtefactURL(searchTerm);
@@ -23,10 +24,19 @@ async function buildUrl(requestType, dataSource, searchTerm) {
             break;
 
         case Constants.REQUEST_TYPE.COLLECTION_SEARCH:
-            // BUILD THIS!
+            console.log('Retrieving Collection Search');
+            await import('../institution_functions/Institution_Functions_' + dataSource + '.js')
+                .then(({getSearchResultsURL}) => {
+                    finalURL = getSearchResultsURL(searchTerm);
+                })
+                .catch(err => {
+                    //alert('problem!');
+                    console.log('problem! ' + err);
+                });
             break;
 
         default:
+            console.log('Retrieving lord knows what');
             break;
     }
     return finalURL;
@@ -55,7 +65,7 @@ async function makeRemoteDataRequest(url) {
         .then(res => res.json())
         .then(
             (result) => {
-                console.log(result);
+                //console.log(result);
                 returnData[Constants.DATA_REQUEST_RESULT] = Constants.DATA_REQUEST_STATUS.SUCCESS;
                 returnData[Constants.DATA_REQUEST_RAW_DATA] = result;
                 }
@@ -66,14 +76,14 @@ async function makeRemoteDataRequest(url) {
             (error) => {
                 if (returnData[Constants.DATA_REQUEST_RESULT] === Constants.DATA_REQUEST_STATUS.LOADING) {
                     returnData[Constants.DATA_REQUEST_RESULT] = Constants.DATA_REQUEST_STATUS.FAILURE;
-                    returnData[Constants.DATA_REQUEST_ERROR] = 'Sorry, your data could not be loaded. This may be a network error (check your internet connection), or possibly no data was sent back from the institution - check you search!';
+                    returnData[Constants.DATA_REQUEST_ERROR] = 'Sorry, your data could not be loaded. This may be a network error (check your internet connection), or possibly no data was sent back from the institution - check your search!';
                 }
             }
         );
     return returnData;
 }
 
-async function formatRemoteData(dataSource, rawData) {
+async function formatRemoteData(requestType, dataSource, rawData) {
     //var test = {
     //    [Constants.DATA_REQUEST_STATUS.LOADING]: 'hello world!',
     //};
@@ -83,14 +93,37 @@ async function formatRemoteData(dataSource, rawData) {
   
     if (rawData[Constants.DATA_REQUEST_RESULT] === Constants.DATA_REQUEST_STATUS.SUCCESS) {
         var processedData = null;
-        await import('../institution_functions/Institution_Functions_' + dataSource + '.js')
-        .then(({processSingleArtefactData}) => {
-            processedData = processSingleArtefactData(rawData);
-        })
-        .catch(err => {
-            console.log('Format remote data - problem! ' + err);
-            processedData = rawData;
-        });
+
+
+        switch (requestType) {
+            case Constants.REQUEST_TYPE.SINGLE_ARTEFACT:
+                await import('../institution_functions/Institution_Functions_' + dataSource + '.js')
+                .then(({processSingleArtefactData}) => {
+                    processedData = processSingleArtefactData(rawData);
+                })
+                .catch(err => {
+                    console.log('Format remote data - problem! ' + err);
+                    processedData = rawData;
+                });
+                break;
+            
+            case Constants.REQUEST_TYPE.COLLECTION_SEARCH:
+                await import('../institution_functions/Institution_Functions_' + dataSource + '.js')
+                .then(({processCollectionSearchData}) => {
+                    processedData = processCollectionSearchData(rawData);
+                })
+                .catch(err => {
+                    console.log('Format remote data - problem! ' + err);
+                    processedData = rawData;
+                });
+                break;
+    
+            default:
+                console.log('Processing lord knows what');
+                break;
+        }
+
+
         return processedData;
     } else {
         return rawData;

@@ -1,7 +1,8 @@
 import React from 'react';
 import * as Constants from './constants/Constants.js';
-import ArtefactDetails from './components/ArtefactDetails.js';
 import SearchControls from './components/SearchControls.js';
+import SearchResults from './components/SearchResults.js';
+import ArtefactDetails from './components/ArtefactDetails.js';
 import getData from './dataAccess/RemoteDataAccess.js';
 import logo from './logo.svg';
 import './App.css';
@@ -10,38 +11,75 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedSearchType: Constants.REQUEST_TYPE.SINGLE_ARTEFACT,
       selectedSource: Constants.DEFAULT_SOURCE,
       lastSearchSource : null,
-      dataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
-      rawObjectData: [],
-      processedObjectData: [],
-      objectID: null,
-      errorMessage: null,
+      searchText: null,
+      testing: 'blah',
+      singleArtefactDataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
+      singleArtefactRawData: [],
+      singleArtefactProcessedData: [],
+      singleArtefactErrorMessage: null,
+      searchResultsDataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
+      searchResultsRawData: [],
+      searchResultsProcessedData: [],
+      searchResultsErrorMessage: null,
     }
       this.handleClick = this.handleClick.bind(this);
       this.handleChange = this.handleChange.bind(this);
   }
- 
+
+  requestData(searchType, selectedSource, searchText) {
+    getData(searchType, selectedSource, searchText)
+      .then(returnData => {
+        var dataRequestStatus = searchType + 'DataRequestStatus';
+        var errorMessage = searchType + 'ErrorMessage';
+        var rawData = searchType + 'RawData';
+        var processedData = searchType + 'ProcessedData';
+        this.setState({
+          [dataRequestStatus]: returnData[Constants.DATA_REQUEST_RESULT],
+          [errorMessage]: returnData[Constants.DATA_REQUEST_ERROR],
+          [rawData]: returnData[Constants.DATA_REQUEST_RAW_DATA],
+          [processedData]: returnData[Constants.DATA_REQUEST_PROCESSED_DATA],
+          lastSearchSource: selectedSource,
+        });
+      })
+  }
+
   handleClick(event) {
-    switch (event.target.id) {
+    console.log('handleClick fired by: ' + event);
+    console.log('handleClick fired by: ' + event.target);
+    console.log('handleClick fired by: ' + event.target.id);
+    console.log('handleClick fired by: ' + event.target.className);
+
+    var category = (event.target.className === Constants.SEARCH_CELL || event.target.className === Constants.SEARCH_PREVIEW_IMAGE) ? event.target.className : event.target.id;
+
+    switch (category) {
       case Constants.SEARCH_BUTTON:
-        if (this.state.objectID) {
+        if (this.state.searchText) {
+          var dataRequestStatus = this.state.selectedSearchType + 'DataRequestStatus';
+          var errorMessage = this.state.selectedSearchType + 'ErrorMessage';
           this.setState({
-            dataRequestStatus: Constants.DATA_REQUEST_STATUS.LOADING,
-            errorMessage: null,
+            [dataRequestStatus]: Constants.DATA_REQUEST_STATUS.LOADING,
+            [errorMessage]: null,
             lastSearchSource: this.state.selectedSource,
+            searchText: this.state.searchText.trim(),
           });
-          getData(Constants.REQUEST_TYPE.SINGLE_ARTEFACT, this.state.selectedSource, this.state.objectID)
-            .then(returnData => {
-              this.setState({
-                dataRequestStatus: returnData[Constants.DATA_REQUEST_RESULT],
-                errorMessage: returnData[Constants.DATA_REQUEST_ERROR],
-                rawObjectData: returnData[Constants.DATA_REQUEST_RAW_DATA],
-                processedObjectData: returnData[Constants.DATA_REQUEST_PROCESSED_DATA],
-                lastSearchSource: this.state.selectedSource,
-              });
-            })
+          this.requestData(this.state.selectedSearchType, this.state.selectedSource, this.state.searchText);
         } //else there is no search term, so no action. In future, have button disabled until there is a term.
+      break;
+
+      case Constants.SEARCH_CELL:
+      case Constants.SEARCH_PREVIEW_IMAGE:
+        var artefact_id =  event.target.id.substring(event.target.id.indexOf(Constants.SEARCH_CELL)+Constants.SEARCH_CELL.length+1);
+        console.log("worked! " + artefact_id);
+        this.setState({
+          singleArtefactDataRequestStatus: Constants.DATA_REQUEST_STATUS.LOADING,
+          singleArtefactErrorMessage: null,
+          searchText: artefact_id,
+        });
+        this.requestData(Constants.REQUEST_TYPE.SINGLE_ARTEFACT, this.state.lastSearchSource, artefact_id);
+     
       break;
 
     default:
@@ -53,7 +91,7 @@ class App extends React.Component {
     switch (event.target.id) {
       case Constants.SEARCH_INPUTBOX:
         this.setState({
-          objectID: event.target.value
+          searchText: event.target.value
         })
       break;
  
@@ -62,6 +100,15 @@ class App extends React.Component {
           selectedSource: event.target.value
         });
       break;
+ 
+      case Constants.REQUEST_TYPE.SINGLE_ARTEFACT:
+      case Constants.REQUEST_TYPE.COLLECTION_SEARCH:
+        {
+            this.setState({
+                selectedSearchType: event.target.id
+            });
+            break;
+        }
 
       default:
       break;
@@ -73,19 +120,21 @@ class App extends React.Component {
       <div className = "App">
         <div className = "App-header">
           <img src = {logo} className = "App-logo" alt = "logo" />
-        <h2>Museum Companion</h2>
+          <h2>Museum Companion</h2>
+        </div>
+        <div className = "controls">
+          <p className = "App-intro" >
+            Search for an artefact by ID! eg. O61949 or O234 or (BNB) 015268415
+          </p>
+          <SearchControls selected_source={this.state.selectedSource} selected_search_type={this.state.selectedSearchType} search_text={this.state.searchText} onChange={this.handleChange} onClick={this.handleClick} />
+        </div>
+        <div className="external-data">
+          <SearchResults dataRequestStatus={this.state.searchResultsDataRequestStatus} searchData={this.state.searchResultsProcessedData} onClick={this.handleClick} />
+          <ArtefactDetails dataRequestStatus={this.state.singleArtefactDataRequestStatus} source={this.state.lastSearchSource} objectData={this.state.singleArtefactProcessedData} errorMessage={this.state.singleArtefactErrorMessage} />
+        </div>
       </div>
-      <div className = "controls">
-        <p className = "App-intro" >
-          Search for an artefact by ID! eg. O61949 or O234 or (BNB) 015268415
-        </p>
-        <SearchControls selected_source={this.state.selectedSource} onChange={this.handleChange} onClick={this.handleClick}/>
-      </div>
-      <div className="external-data">
-        <ArtefactDetails dataRequestStatus={this.state.dataRequestStatus} source={this.state.lastSearchSource} objectData={this.state.processedObjectData} errorMessage={this.state.errorMessage}/>
-      </div>
-    </div>);
-    }
+    );
+  }
 }
 
 export default App

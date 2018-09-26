@@ -1,16 +1,22 @@
 import * as Constants from '../constants/Constants.js';
 
-const OBJECT_ID_PLACEHOLDER = '---OBJECT_ID---'
-const URL_SINGLE_ARTEFACT= 'https://www.vam.ac.uk/api/json/museumobject/' + OBJECT_ID_PLACEHOLDER;
+const PLACEHOLDER = '---OBJECT_ID---'
+const URL_SINGLE_ARTEFACT = 'https://www.vam.ac.uk/api/json/museumobject/' + PLACEHOLDER;
+const URL_SEARCH = 'https://www.vam.ac.uk/api/json/museumobject/search?q=' + PLACEHOLDER;
+const URL_IMAGE_ROOT = 'https://media.vam.ac.uk/media/thira/collection_images/';
 
 export function getSingleArtefactURL(objectID) {
-	var replacementRegex = new RegExp(OBJECT_ID_PLACEHOLDER,'g');
+	var replacementRegex = new RegExp(PLACEHOLDER,'g');
     return(URL_SINGLE_ARTEFACT.replace(replacementRegex, objectID));
+}
+
+export function getSearchResultsURL(search_text) {
+	var replacementRegex = new RegExp(PLACEHOLDER,'g');
+    return(URL_SEARCH.replace(replacementRegex, search_text));
 }
 
 export function processSingleArtefactData(rawData) {
     var rawObjectData = rawData[Constants.DATA_REQUEST_RAW_DATA];
-    console.log("1");
     var fields = {
         objectName: null,
         objectSlug: 'Slug still to be set up...',
@@ -18,20 +24,41 @@ export function processSingleArtefactData(rawData) {
         objectText: 'Text still to be set up...',
         objectFullText: 'Should be lots of words here...',
         }
-    console.log("2");
     fields.objectName = (!rawObjectData[0].fields.title) ? "Unknown" : rawObjectData[0].fields.title;
-    console.log("2a");
     fields.objectSlug = (rawObjectData[0].fields.descriptive_line) ? rawObjectData[0].fields.descriptive_line : rawObjectData[0].fields.materials_techniques + ', ' + rawObjectData[0].fields.date_text;
-    console.log("2b");
     if (rawObjectData[0].fields.primary_image_id) {
-        fields.objectPrimaryImageURL = 'http://media.vam.ac.uk/media/thira/collection_images/' + rawObjectData[0].fields.primary_image_id.substring(0, 6) + '/' + rawObjectData[0].fields.primary_image_id + '.jpg'
+        fields.objectPrimaryImageURL = URL_IMAGE_ROOT + rawObjectData[0].fields.primary_image_id.substring(0, 6) + '/' + rawObjectData[0].fields.primary_image_id + '.jpg'
     };
-    console.log("3");
     fields.objectText = rawObjectData[0].fields.physical_description;
-    console.log("4");
     fields.objectFullText = JSON.stringify(rawObjectData);
-    console.log("5");
     rawData[Constants.DATA_REQUEST_PROCESSED_DATA] = fields;
-    console.log("6");
+    return(rawData);
+}
+
+export function processCollectionSearchData(rawData) {
+    var rawSearchData = rawData[Constants.DATA_REQUEST_RAW_DATA];
+    var searchResults = [];
+
+    var counter = 0;
+    while (counter < rawSearchData.records.length) {
+        var fields = {
+            objectID: null,
+            objectName: null,
+            objectSummary: null,
+            objectPrimaryImageURL: null,
+            }
+        fields.objectID = rawSearchData.records[counter].fields.object_number;
+        fields.objectName = rawSearchData.records[counter].fields.object;
+        fields.objectSummary = rawSearchData.records[counter].fields.title + ', ' + rawSearchData.records[counter].fields.artist + ', ' + rawSearchData.records[counter].fields.place + ', ' + rawSearchData.records[counter].fields.date_text;
+        fields.objectPrimaryImageURL = rawSearchData.records[counter].fields.primary_image_id ? URL_IMAGE_ROOT + rawSearchData.records[counter].fields.primary_image_id.substring(0, 6) + '/' + rawSearchData.records[counter].fields.primary_image_id + '.jpg' : null;
+        
+        searchResults.push(fields);
+        //console.log(counter);
+        //console.log(fields);
+        counter++;
+    }
+
+    //console.log(searchResults);
+    rawData[Constants.DATA_REQUEST_PROCESSED_DATA] = searchResults;
     return(rawData);
 }
