@@ -1,4 +1,5 @@
 import React from 'react';
+import ImageGallery from "./ImageGallery";
 import * as Constants from '../constants/Constants.js';
 
 class ArtefactDetails extends React.Component {
@@ -23,6 +24,7 @@ class ArtefactDetails extends React.Component {
               <ArtefactName objectName={this.props.objectData.objectName} />
               <ArtefactSlug objectSlug={this.props.objectData.objectSlug}/>
               <ArtefactPrimaryImage objectPrimaryImageURL={this.props.objectData.objectPrimaryImageURL}/>
+              <ImageGallery imageUrls={this.props.objectData.objectImages} onClick={this.props.onClick}/>
               <ArtefactText objectText={this.props.objectData.objectText}/>
               <ArtefactFullText objectFullText={this.props.objectData.objectFullText}/>
           </div>);

@@ -13,6 +13,7 @@ class App extends React.Component {
     this.state = {
       selectedSearchType: Constants.REQUEST_TYPE.SINGLE_ARTEFACT,
       selectedSource: Constants.DEFAULT_SOURCE,
+      selectedNumSearchResults: Constants.DEFAULT_NO_RESULTS_TO_SHOW,
       lastSearchSource : null,
       searchText: null,
       testing: 'blah',
@@ -53,7 +54,8 @@ class App extends React.Component {
     console.log('handleClick fired by: ' + event.target.className);
 
     var category = (event.target.className === Constants.SEARCH_CELL || event.target.className === Constants.SEARCH_PREVIEW_IMAGE) ? event.target.className : event.target.id;
-
+    category = event.target.className === Constants.ARTEFACT_PREVIEW_IMAGE ? event.target.className : category;
+    
     switch (category) {
       case Constants.SEARCH_BUTTON:
         if (this.state.searchText) {
@@ -79,7 +81,15 @@ class App extends React.Component {
           searchText: artefact_id,
         });
         this.requestData(Constants.REQUEST_TYPE.SINGLE_ARTEFACT, this.state.lastSearchSource, artefact_id);
+      break;
      
+      case Constants.ARTEFACT_PREVIEW_IMAGE:
+        console.log("image clicked! " + event.target.id);
+        var tempData = this.state.singleArtefactProcessedData;
+        tempData.objectPrimaryImageURL = event.target.src;
+        this.setState({
+          singleArtefactProcessedData: tempData,
+        });
       break;
 
     default:
@@ -98,6 +108,12 @@ class App extends React.Component {
       case Constants.SEARCH_SOURCE_SELECT:
         this.setState({
           selectedSource: event.target.value
+        });
+      break;
+ 
+      case Constants.SEARCH_RESULTS_NUMBER_SELECT:
+        this.setState({
+          selectedNumSearchResults: event.target.value
         });
       break;
  
@@ -129,8 +145,8 @@ class App extends React.Component {
           <SearchControls selected_source={this.state.selectedSource} selected_search_type={this.state.selectedSearchType} search_text={this.state.searchText} onChange={this.handleChange} onClick={this.handleClick} />
         </div>
         <div className="external-data">
-          <SearchResults dataRequestStatus={this.state.searchResultsDataRequestStatus} searchData={this.state.searchResultsProcessedData} onClick={this.handleClick} />
-          <ArtefactDetails dataRequestStatus={this.state.singleArtefactDataRequestStatus} source={this.state.lastSearchSource} objectData={this.state.singleArtefactProcessedData} errorMessage={this.state.singleArtefactErrorMessage} />
+          <SearchResults dataRequestStatus={this.state.searchResultsDataRequestStatus} searchData={this.state.searchResultsProcessedData} selectedNumSearchResults={this.state.selectedNumSearchResults} onChange={this.handleChange} onClick={this.handleClick} />
+          <ArtefactDetails dataRequestStatus={this.state.singleArtefactDataRequestStatus} source={this.state.lastSearchSource} objectData={this.state.singleArtefactProcessedData} errorMessage={this.state.singleArtefactErrorMessage} onClick={this.handleClick}/>
         </div>
       </div>
     );

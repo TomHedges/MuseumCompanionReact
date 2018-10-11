@@ -21,6 +21,7 @@ export function processSingleArtefactData(rawData) {
         objectName: null,
         objectSlug: 'Slug still to be set up...',
         objectPrimaryImageURL: null,
+        objectImages: [],
         objectText: 'Text still to be set up...',
         objectFullText: 'Should be lots of words here...',
         }
@@ -29,6 +30,11 @@ export function processSingleArtefactData(rawData) {
     if (rawObjectData[0].fields.primary_image_id) {
         fields.objectPrimaryImageURL = URL_IMAGE_ROOT + rawObjectData[0].fields.primary_image_id.substring(0, 6) + '/' + rawObjectData[0].fields.primary_image_id + '.jpg'
     };
+    var counter = 0;
+    while (counter < rawObjectData[0].fields.image_set.length) {
+        fields.objectImages.push(URL_IMAGE_ROOT + rawObjectData[0].fields.image_set[counter].fields.image_id.substring(0, 6) + '/' + rawObjectData[0].fields.image_set[counter].fields.image_id + '.jpg');
+        counter++;
+    }
     fields.objectText = rawObjectData[0].fields.physical_description;
     fields.objectFullText = JSON.stringify(rawObjectData);
     rawData[Constants.DATA_REQUEST_PROCESSED_DATA] = fields;

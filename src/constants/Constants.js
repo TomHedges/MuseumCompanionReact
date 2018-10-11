@@ -44,3 +44,16 @@ export const DATA_REQUEST_STATUS = {
 
 export const SEARCH_CELL = "search_cell";
 export const SEARCH_PREVIEW_IMAGE = "search_preview_image";
+export const ARTEFACT_PREVIEW_IMAGE = "artefact_preview_image";
+
+export const PREVIOUS_BUTTON = "previous_button";
+export const NEXT_BUTTON = "next_button";
+
+export const SEARCH_RESULTS_NUMBER_SELECT = "search_results_number_select";
+export const NO_RESULTS_TO_SHOW = {
+  25: 25,
+  50: 50,
+  100: 100,
+  ALL: "All",
+}
+export const DEFAULT_NO_RESULTS_TO_SHOW = "100";
