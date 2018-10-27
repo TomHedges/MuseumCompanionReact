@@ -36,8 +36,11 @@ export function processSingleArtefactData(rawData) {
         counter++;
     }
     fields.objectText = rawObjectData[0].fields.physical_description;
-    fields.objectFullText = JSON.stringify(rawObjectData);
+    fields.objectFullText = "<p>test</p>" + JSON.stringify(rawObjectData);
     rawData[Constants.DATA_REQUEST_PROCESSED_DATA] = fields;
+
+    var tempArray = parseFullText(rawObjectData[0].fields);
+    
     return(rawData);
 }
 
@@ -45,26 +48,51 @@ export function processCollectionSearchData(rawData) {
     var rawSearchData = rawData[Constants.DATA_REQUEST_RAW_DATA];
     var searchResults = [];
 
-    var counter = 0;
-    while (counter < rawSearchData.records.length) {
-        var fields = {
-            objectID: null,
-            objectName: null,
-            objectSummary: null,
-            objectPrimaryImageURL: null,
-            }
-        fields.objectID = rawSearchData.records[counter].fields.object_number;
-        fields.objectName = rawSearchData.records[counter].fields.object;
-        fields.objectSummary = rawSearchData.records[counter].fields.title + ', ' + rawSearchData.records[counter].fields.artist + ', ' + rawSearchData.records[counter].fields.place + ', ' + rawSearchData.records[counter].fields.date_text;
-        fields.objectPrimaryImageURL = rawSearchData.records[counter].fields.primary_image_id ? URL_IMAGE_ROOT + rawSearchData.records[counter].fields.primary_image_id.substring(0, 6) + '/' + rawSearchData.records[counter].fields.primary_image_id + '.jpg' : null;
-        
-        searchResults.push(fields);
-        //console.log(counter);
-        //console.log(fields);
-        counter++;
+    if (rawSearchData.records.length === 0) {
+        rawData[Constants.DATA_REQUEST_RESULT] = Constants.DATA_REQUEST_STATUS.FAILURE;
+        rawData[Constants.DATA_REQUEST_ERROR] = 'Sorry, your search returned 0 results!';
+    } else {
+        var counter = 0;
+        while (counter < rawSearchData.records.length) {
+            var fields = {
+                objectID: null,
+                objectName: null,
+                objectSummary: null,
+                objectPrimaryImageURL: null,
+                }
+            fields.objectID = rawSearchData.records[counter].fields.object_number;
+            fields.objectName = rawSearchData.records[counter].fields.object;
+            fields.objectSummary = rawSearchData.records[counter].fields.title + ', ' + rawSearchData.records[counter].fields.artist + ', ' + rawSearchData.records[counter].fields.place + ', ' + rawSearchData.records[counter].fields.date_text;
+            fields.objectPrimaryImageURL = rawSearchData.records[counter].fields.primary_image_id ? URL_IMAGE_ROOT + rawSearchData.records[counter].fields.primary_image_id.substring(0, 6) + '/' + rawSearchData.records[counter].fields.primary_image_id + '.jpg' : null;
+            
+            searchResults.push(fields);
+            //console.log(counter);
+            //console.log(fields);
+            counter++;
+        }
+        //console.log(searchResults);
+        rawData[Constants.DATA_REQUEST_PROCESSED_DATA] = searchResults;
     }
 
-    //console.log(searchResults);
-    rawData[Constants.DATA_REQUEST_PROCESSED_DATA] = searchResults;
     return(rawData);
+}
+
+function parseFullText(rawObjectData) {
+    var temp = "test";
+    console.log(temp);
+    var keys = Object.keys(rawObjectData);
+    console.log(keys);
+
+    var elements = [];
+    var counter = 0;
+    while (counter < keys.length) {
+        var element = [];
+        element.push(keys[counter]);
+        element.push(rawObjectData[keys[counter]]);
+        elements.push(element);
+        counter++;
+    }
+    console.log(elements);
+
+    return temp;
 }

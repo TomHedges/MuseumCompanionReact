@@ -5,11 +5,17 @@ class SearchControls extends React.Component {
     render() {
         return (
             //<React.Fragment>
-            <div className = "Search-controls">
-                <SearchType selected_search_type={this.props.selected_search_type} onChange={this.props.onChange} />
-                <SourceOption value={this.props.selected_source} onChange={this.props.onChange} />
-                <SearchInputbox onChange={this.props.onChange} />
-                <SearchButton onClick={this.props.onClick} disabled={!this.props.search_text} selected_search_type={this.props.selected_search_type}/>
+            <div className={Constants.DISPLAY_SEARCH_CONTROLS}>
+                <div className={Constants.DISPLAY_SEARCH_CONTROLS_GROUP}>
+                    <SearchType selected_search_type={this.props.selected_search_type} onChange={this.props.onChange} />
+                    <SourceOption value={this.props.selected_source} onChange={this.props.onChange} />
+                </div>
+                <div className={Constants.DISPLAY_SEARCH_CONTROLS_GROUP}>
+                    <SearchInputbox onChange={this.props.onChange} search_text={this.props.search_text}/>
+                    <SearchButton onClick={this.props.onClick} disabled={!this.props.search_text} selected_search_type={this.props.selected_search_type} />
+                    <ResetButton onClick={this.props.onClick} />
+                </div>
+                <div className="clearfix"></div>
             </div>
             //</React.Fragment>
         );
@@ -18,12 +24,11 @@ class SearchControls extends React.Component {
 
 function SearchType(props) {
     return (
-        <React.Fragment>
-            <p>Search type:
-                <label><input id={Constants.REQUEST_TYPE.SINGLE_ARTEFACT} type="radio" value={Constants.REQUEST_TYPE.SINGLE_ARTEFACT} onChange={props.onChange} checked={props.selected_search_type === Constants.REQUEST_TYPE.SINGLE_ARTEFACT}/>Single Artefact</label>
-                <label><input id={Constants.REQUEST_TYPE.COLLECTION_SEARCH} type="radio" value={Constants.REQUEST_TYPE.COLLECTION_SEARCH} onChange={props.onChange} checked={props.selected_search_type === Constants.REQUEST_TYPE.COLLECTION_SEARCH}/>Collection Search</label>
-            </p>
-        </React.Fragment>
+        <div className={Constants.DISPLAY_SEARCH_CONTROLS_SUBGROUP}>
+            <span className={Constants.DISPLAY_CONTROL_LABEL}>Search type:</span>
+            <label><input id={Constants.REQUEST_TYPE.COLLECTION_SEARCH} type="radio" value={Constants.REQUEST_TYPE.COLLECTION_SEARCH} onChange={props.onChange} checked={props.selected_search_type === Constants.REQUEST_TYPE.COLLECTION_SEARCH}/>Collection Search</label>
+            <label><input id={Constants.REQUEST_TYPE.SINGLE_ARTEFACT} type="radio" value={Constants.REQUEST_TYPE.SINGLE_ARTEFACT} onChange={props.onChange} checked={props.selected_search_type === Constants.REQUEST_TYPE.SINGLE_ARTEFACT}/>Single Artefact</label>
+        </div>
     );
 }
 
@@ -44,16 +49,22 @@ class SourceOption extends React.Component {
         }
 
         return (
-            <select id={Constants.SEARCH_SOURCE_SELECT} value={this.props.value} onChange={this.props.onChange}>
-                {options}
-            </select>
+            <div className={Constants.DISPLAY_SEARCH_CONTROLS_SUBGROUP}>
+                <span className={Constants.DISPLAY_CONTROL_LABEL}>Institution: </span>
+                <select id={Constants.SEARCH_SOURCE_SELECT} value={this.props.value} onChange={this.props.onChange}>
+                    {options}
+                </select>
+            </div>
         );
     }
 }
 
 function SearchInputbox(props) {
     return (
-        <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={props.onChange} />
+        <div className={Constants.DISPLAY_SEARCH_CONTROLS_SUBGROUP}>
+            <span className={Constants.DISPLAY_CONTROL_LABEL}>Search Term: </span>
+            <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={props.onChange} value={props.search_text}/>
+        </div>
     );
 }
 
@@ -61,6 +72,12 @@ function SearchButton(props) {
     var label = props.disabled ? 'Enter a search term' : (props.selected_search_type === Constants.REQUEST_TYPE.SINGLE_ARTEFACT ? "Load Artefact" : "Search Collection");
     return (
         <button className="button" id={Constants.SEARCH_BUTTON} disabled={props.disabled} onClick={props.onClick}>{label}</button>
+    );
+}
+
+function ResetButton(props) {
+    return (
+        <button className="button" id={Constants.RESET_BUTTON} onClick={props.onClick}>Reset</button>
     );
 }
 

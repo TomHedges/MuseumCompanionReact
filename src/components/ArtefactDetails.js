@@ -12,26 +12,28 @@ class ArtefactDetails extends React.Component {
         break;
 
         case Constants.DATA_REQUEST_STATUS.LOADING:   
-          return_value = <p>Loading...</p>;
+          return_value = <div className={Constants.DISPLAY_ARTEFACT_MESSAGE}><p>Loading...</p></div>;
         break;
 
         case Constants.DATA_REQUEST_STATUS.FAILURE:
-          return_value = <p>Error: {this.props.errorMessage}</p>
+          return_value = <div className={Constants.DISPLAY_ARTEFACT_MESSAGE_ERROR}><p>{this.props.errorMessage}</p></div>;
         break;
 
         case Constants.DATA_REQUEST_STATUS.SUCCESS:
-          return_value = (<div>
+          return_value = (
+            <div className={Constants.DISPLAY_ARTEFACT_CONTENT}>
               <ArtefactName objectName={this.props.objectData.objectName} />
               <ArtefactSlug objectSlug={this.props.objectData.objectSlug}/>
               <ArtefactPrimaryImage objectPrimaryImageURL={this.props.objectData.objectPrimaryImageURL}/>
               <ImageGallery imageUrls={this.props.objectData.objectImages} onClick={this.props.onClick}/>
               <ArtefactText objectText={this.props.objectData.objectText}/>
               <ArtefactFullText objectFullText={this.props.objectData.objectFullText}/>
-          </div>);
+            </div>
+          );
         break;
 
         default:
-          return_value = <p>Error: This message should never be seen</p>
+          return_value = <p>This message should never be seen</p>
         break;
       }
 
@@ -58,9 +60,9 @@ class ArtefactDetails extends React.Component {
   class ArtefactPrimaryImage extends React.Component {
     render () {
       if (this.props.objectPrimaryImageURL) {
-        return <img src={this.props.objectPrimaryImageURL} alt='Primary visual representation of artefact' />;
+        return <div className={Constants.DISPLAY_PRIMARY_IMAGE_WRAPPER}><img className= {Constants.DISPLAY_PRIMARY_IMAGE} src={this.props.objectPrimaryImageURL} alt='Primary visual representation of artefact' /></div>;
       } else {
-        return <p>No image available</p>;
+        return <p>{Constants.MESSAGE_NO_IMAGE}</p>;
       }
     }
   }

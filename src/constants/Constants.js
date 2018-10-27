@@ -16,6 +16,8 @@ export const SOURCES = {
 }
 export const DEFAULT_SOURCE = "V_AND_A"
 
+export const MESSAGE_NO_IMAGE = "No image of this artefact is available"
+
 export const DATA_FIELDS = {
   DATA_REQUEST_STATUS: "DataRequestStatus",
   ERROR_MESSAGE: "ErrorMessage",
@@ -26,6 +28,7 @@ export const DATA_FIELDS = {
 export const SEARCH_SOURCE_SELECT = "search_source_select"
 export const SEARCH_INPUTBOX = "search_inputbox"
 export const SEARCH_BUTTON = "search_button"
+export const RESET_BUTTON = "reset_button"
 export const REQUEST_TYPE = {
   SINGLE_ARTEFACT: "singleArtefact",
   COLLECTION_SEARCH: "searchResults",
@@ -42,7 +45,11 @@ export const DATA_REQUEST_STATUS = {
   FAILURE: "failure",
 }
 
+export const SEARCH_TABLE = "search_table";
+export const SEARCH_TABLE_SUMMARY_COLUMN = "search_table_summary_column";
+export const SEARCH_TABLE_IMAGE_COLUMN = "search_table_image_column";
 export const SEARCH_CELL = "search_cell";
+export const SEARCH_RESULT_NAME = "search_result_name";
 export const SEARCH_PREVIEW_IMAGE = "search_preview_image";
 export const ARTEFACT_PREVIEW_IMAGE = "artefact_preview_image";
 
@@ -57,3 +64,16 @@ export const NO_RESULTS_TO_SHOW = {
   ALL: "All",
 }
 export const DEFAULT_NO_RESULTS_TO_SHOW = "100";
+export const DISPLAY_SEARCH_CONTROLS = "display_search_controls";
+export const DISPLAY_SEARCH_CONTROLS_GROUP = "display_search_controls_group";
+export const DISPLAY_SEARCH_CONTROLS_SUBGROUP = "display_search_controls_subgroup";
+export const DISPLAY_CONTROL_LABEL = "display_control_label";
+export const DISPLAY_SEARCH_RESULTS = "display_search_results";
+export const DISPLAY_SEARCH_RESULTS_MESSAGE = "display_search_results_message";
+export const DISPLAY_SEARCH_RESULTS_MESSAGE_ERROR = "display_search_results_message_error";
+export const DISPLAY_SEARCH_RESULTS_NAV = "display_search_results_nav";
+export const DISPLAY_ARTEFACT_CONTENT = "display_artefact_content";
+export const DISPLAY_ARTEFACT_MESSAGE = "display_artefact_message";
+export const DISPLAY_ARTEFACT_MESSAGE_ERROR = "display_artefact_message_error";
+export const DISPLAY_PRIMARY_IMAGE = "display_primary_image";
+export const DISPLAY_PRIMARY_IMAGE_WRAPPER = "display_primary_image_wrapper";

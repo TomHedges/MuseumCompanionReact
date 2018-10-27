@@ -49,13 +49,26 @@ class ImageGallery extends React.Component {
   }
 
   render() {
-    return (
-      <div className="gallery wrapper" ref={element => { this.galleryElement = element; }}>
-          {this.renderSpinner()}
-          {this.props.imageUrls.map(imageUrl => this.renderImage(imageUrl))}
-        <div className="clearfix"></div>
-      </div>
-    );
+
+    if (this.props.imageUrls.length > 0) {
+      return (
+        <div className="gallery wrapper" ref={element => { this.galleryElement = element; }}>
+            {this.renderSpinner()}
+            {this.props.imageUrls.map(imageUrl => this.renderImage(imageUrl))}
+          <div className="clearfix"></div>
+        </div>
+      );
+    } else {
+      return (
+        null
+        /*
+        <div className="gallery wrapper">
+            <p>There are no images of this artefact</p>
+          <div className="clearfix"></div>
+        </div>
+        */
+      );
+    }
   }
 }
 
