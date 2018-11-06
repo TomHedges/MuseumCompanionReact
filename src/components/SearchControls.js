@@ -65,7 +65,7 @@ function SearchInputbox(props) {
     return (
         <div className={Constants.DISPLAY_SEARCH_CONTROLS_SUBGROUP}>
             <span className={Constants.DISPLAY_CONTROL_LABEL}>Search Term: </span>
-            <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={props.onChange} value={props.search_text} autofocus="true" />
+            <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={props.onChange} value={props.search_text} autoFocus="true" />
         </div>
     );
 }

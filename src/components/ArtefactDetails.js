@@ -3,6 +3,14 @@ import ImageGallery from "./ImageGallery";
 import * as Constants from '../constants/Constants.js';
 
 class ArtefactDetails extends React.Component {
+    componentDidUpdate(prevProps) {
+      const element = document.getElementById(Constants.DISPLAY_ARTEFACT_CONTENT);
+      if (element && this.props.objectData !== prevProps.objectData) {
+        //alert("test");
+        element.scrollIntoView({ block: 'start', inline: "nearest", behavior: 'smooth' });
+      }
+    }
+
     render () {
       var return_value = null;
 
@@ -21,7 +29,7 @@ class ArtefactDetails extends React.Component {
 
         case Constants.DATA_REQUEST_STATUS.SUCCESS:
           return_value = (
-            <div className={Constants.DISPLAY_ARTEFACT_CONTENT}>
+            <div className={Constants.DISPLAY_ARTEFACT_CONTENT} id={Constants.DISPLAY_ARTEFACT_CONTENT}>
               <ArtefactName objectName={this.props.objectData.objectName} />
               <ArtefactSlug objectSlug={this.props.objectData.objectSlug}/>
               <ArtefactPrimaryImage objectPrimaryImageURL={this.props.objectData.objectPrimaryImageURL}/>
@@ -58,6 +66,14 @@ class ArtefactDetails extends React.Component {
   }
 
   class ArtefactPrimaryImage extends React.Component {
+    componentDidUpdate(prevProps) {
+      const element = document.getElementById(Constants.DISPLAY_ARTEFACT_CONTENT);
+      if (element && this.props.objectPrimaryImageURL !== prevProps.objectPrimaryImageURL) {
+        //alert("test");
+        element.scrollIntoView({ block: 'start', inline: "nearest", behavior: 'smooth' });
+      }
+    }
+
     render () {
       if (this.props.objectPrimaryImageURL) {
         return <div className={Constants.DISPLAY_PRIMARY_IMAGE_WRAPPER}><img className= {Constants.DISPLAY_PRIMARY_IMAGE} src={this.props.objectPrimaryImageURL} alt='Primary visual representation of artefact' /></div>;
@@ -76,10 +92,7 @@ class ArtefactDetails extends React.Component {
   }
 
   class ArtefactFullText extends React.Component {
-    //<p>{this.props.objectFullText}.split('\n').map((item, i) => <p key={i}>{item}</p>);</p>
-
     render () {
-      //<p>{this.props.objectFullText}</p>
       return (
         <div>
           <p>Artefact Full Text:</p>
@@ -90,55 +103,8 @@ class ArtefactDetails extends React.Component {
   }
 
   function SetOfDetails(props) {
-    console.log("start");
     const details = props.artefactDetails;
-    
-    /*
-    const display = details.map((detail) =>
-      <div className={Constants.DISPLAY_ARTEFACT_DETAILS_GROUP}>
-        <h3 className={Constants.DISPLAY_ARTEFACT_DETAILS_HEADING}>{detail.title}</h3>
-        <p className={Constants.DISPLAY_ARTEFACT_DETAILS_TEXT}>{detail.text}</p>
-      </div>
-    );
-    */
-
-    //const display = details.map((detail) => DisplayDetails(detail));
-
-    //const display = <h3>bob</h3>
-    
     const display = details.map((detail, index) => DisplayDetails(detail, index));
-    /*
-    const display = details.map((detail, index) => {
-      console.log("got here");
-      var artefactDetail = detail;
-
-      if (Array.isArray(detail.text)) {
-        artefactDetail.text = "bob";
-      }
-      
-      return (
-        <div key={index} className={Constants.DISPLAY_ARTEFACT_DETAILS_GROUP}>
-          <h3 className={Constants.DISPLAY_ARTEFACT_DETAILS_HEADING}>{artefactDetail.title}</h3>
-          <p className={Constants.DISPLAY_ARTEFACT_DETAILS_TEXT}>{artefactDetail.text}</p>
-        </div>
-      );
-    });
-    */
-    
-    /*
-    var display;
-    var counter = 0;
-    while (counter < details.length) {
-      //console.log(counter + ": " + details[counter].title + ": " + details[counter].text);
-      display = display + 
-        <div className={Constants.DISPLAY_ARTEFACT_DETAILS_GROUP}>
-          <h3 className={Constants.DISPLAY_ARTEFACT_DETAILS_HEADING}>{details[counter].title}</h3>
-          <p className={Constants.DISPLAY_ARTEFACT_DETAILS_TEXT}>{details[counter].text}</p>
-        </div>
-      counter++;
-    }
-    */
-
     return display;
   }
 
@@ -146,8 +112,6 @@ class ArtefactDetails extends React.Component {
     var artefactDetail = detail;
 
     if (Array.isArray(detail.text)) {
-      //artefactDetail.text = artefactDetail.text.map((detail, index) => DisplayDetails(detail, index));
-
       const subgroup = artefactDetail.text.map((detail, index) => SubGroup(detail, index));
 
       return (
