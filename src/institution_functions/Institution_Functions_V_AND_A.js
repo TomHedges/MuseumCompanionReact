@@ -24,6 +24,7 @@ export function processSingleArtefactData(rawData) {
         objectImages: [],
         objectText: 'Text still to be set up...',
         objectFullText: 'Should be lots of words here...',
+        objectFullDetails: [],
         }
     fields.objectName = (!rawObjectData[0].fields.title) ? "Unknown" : rawObjectData[0].fields.title;
     fields.objectSlug = (rawObjectData[0].fields.descriptive_line) ? rawObjectData[0].fields.descriptive_line : rawObjectData[0].fields.materials_techniques + ', ' + rawObjectData[0].fields.date_text;
@@ -36,11 +37,14 @@ export function processSingleArtefactData(rawData) {
         counter++;
     }
     fields.objectText = rawObjectData[0].fields.physical_description;
-    fields.objectFullText = "<p>test</p>" + JSON.stringify(rawObjectData);
+    fields.objectFullText = JSON.stringify(rawObjectData);
+    
+    var tempArray = parseFullText(rawObjectData[0].fields);
+    //console.log("temparray: " + tempArray);
+    fields.objectFullDetails = tempArray
+    
     rawData[Constants.DATA_REQUEST_PROCESSED_DATA] = fields;
 
-    var tempArray = parseFullText(rawObjectData[0].fields);
-    
     return(rawData);
 }
 
@@ -55,9 +59,9 @@ export function processCollectionSearchData(rawData) {
         var counter = 0;
         while (counter < rawSearchData.records.length) {
             var fields = {
-                objectID: null,
-                objectName: null,
-                objectSummary: null,
+                objectID: "0",
+                objectName: "0",
+                objectSummary: "0",
                 objectPrimaryImageURL: null,
                 }
             fields.objectID = rawSearchData.records[counter].fields.object_number;
@@ -78,21 +82,60 @@ export function processCollectionSearchData(rawData) {
 }
 
 function parseFullText(rawObjectData) {
-    var temp = "test";
-    console.log(temp);
+    //console.log("test");
     var keys = Object.keys(rawObjectData);
-    console.log(keys);
+    //console.log("Keys: " + keys);
 
     var elements = [];
     var counter = 0;
     while (counter < keys.length) {
-        var element = [];
-        element.push(keys[counter]);
-        element.push(rawObjectData[keys[counter]]);
-        elements.push(element);
+        var title = keys[counter];
+        var text = rawObjectData[keys[counter]];
+
+        var useful = true;
+
+        if (text === null || text === "" || text.length === 0) {
+            useful = false;
+        } else {
+            switch (title) {
+                case "sys_updated":
+                case "primary_image_id":
+                case "object_number":
+                case "slug":
+                case "cis_id":
+                case "museumobject":
+                case "museumobject_count":
+                case "museumobject_image_count":
+                case "image_set":
+                case "museum_number_token":
+                case "order":
+                    useful = false;
+                break;
+
+                default:
+                break;
+            }
+        }
+
+        if (useful) {
+            if (Array.isArray(text)) {
+                //TESTING
+                //text = "this is an array!";
+                var new_text = [];
+                for (var i = 0; i < text.length; i++) {
+                    new_text.push(parseFullText(text[i].fields));
+                }
+                text = new_text;
+            }
+            title = title.replace(new RegExp("_", 'g'), " ");
+            title = title.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+            elements.push({
+                            "title" : title,
+                            "text" : text,
+                            });
+        }
         counter++;
     }
-    console.log(elements);
 
-    return temp;
+    return elements;
 }

@@ -129,13 +129,13 @@ div.display_search_controls_subgroup input[type="radio"] {
   }
 }
 
-button#search_button {
+input#search_button {
   margin-left: 15px;
   margin-top: 15px;
   margin-right: 10px;
 }
 
-button#reset_button {
+input#reset_button {
   margin-left: 15px;
   margin-top: 15px;
 }
@@ -396,12 +396,33 @@ div.responsive {
 }
 */
 
+
+div.display_artefact_details_group {
+  border-top: 1px solid #44f;
+}
+
+div.display_artefact_details_subgroup {
+  padding-left: 25px;
+}
+
+h3.display_artefact_details_heading {
+  margin-bottom: 0;
+}
+
+h3.display_artefact_details_subheading {
+  margin-bottom: 15px;
+}
+
+div.display_artefact_details_group p {
+  margin-top: 0;
+}
+
+
 .clearfix:after {
   content: "";
   display: table;
   clear: both;
 }
-
 
 
 .centeredOverlay {

@@ -71,14 +71,17 @@ class App extends React.Component {
   }
 
   handleClick(event) {
-    console.log('handleClick fired by: ' + event);
+    event.preventDefault();
+
+    console.log('handleClick fired by: ' + event.type);
     console.log('handleClick fired by: ' + event.target);
     console.log('handleClick fired by: ' + event.target.id);
     console.log('handleClick fired by: ' + event.target.className);
 
     var category = (event.target.className === Constants.SEARCH_CELL || event.target.className === Constants.SEARCH_PREVIEW_IMAGE) ? event.target.className : event.target.id;
     category = event.target.className === Constants.ARTEFACT_PREVIEW_IMAGE ? event.target.className : category;
-    
+    category = event.type === "submit" ? Constants.SEARCH_BUTTON : category;
+
     switch (category) {
       case Constants.SEARCH_BUTTON:
         var dataRequestStatus = this.state.selectedSearchType + 'DataRequestStatus';

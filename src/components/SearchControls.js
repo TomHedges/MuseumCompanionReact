@@ -6,16 +6,18 @@ class SearchControls extends React.Component {
         return (
             //<React.Fragment>
             <div className={Constants.DISPLAY_SEARCH_CONTROLS}>
-                <div className={Constants.DISPLAY_SEARCH_CONTROLS_GROUP}>
-                    <SearchType selected_search_type={this.props.selected_search_type} onChange={this.props.onChange} />
-                    <SourceOption value={this.props.selected_source} onChange={this.props.onChange} />
-                </div>
-                <div className={Constants.DISPLAY_SEARCH_CONTROLS_GROUP}>
-                    <SearchInputbox onChange={this.props.onChange} search_text={this.props.search_text}/>
-                    <SearchButton onClick={this.props.onClick} disabled={!this.props.search_text} selected_search_type={this.props.selected_search_type} />
-                    <ResetButton onClick={this.props.onClick} />
-                </div>
-                <div className="clearfix"></div>
+                <form onSubmit={this.props.onClick}>
+                    <div className={Constants.DISPLAY_SEARCH_CONTROLS_GROUP}>
+                        <SearchType selected_search_type={this.props.selected_search_type} onChange={this.props.onChange} />
+                        <SourceOption value={this.props.selected_source} onChange={this.props.onChange} />
+                    </div>
+                    <div className={Constants.DISPLAY_SEARCH_CONTROLS_GROUP}>
+                        <SearchInputbox onChange={this.props.onChange} search_text={this.props.search_text}/>
+                        <SearchButton onClick={this.props.onClick} disabled={!this.props.search_text} selected_search_type={this.props.selected_search_type} />
+                        <ResetButton onClick={this.props.onClick} />
+                    </div>
+                    <div className="clearfix"></div>
+                </form>
             </div>
             //</React.Fragment>
         );
@@ -63,7 +65,7 @@ function SearchInputbox(props) {
     return (
         <div className={Constants.DISPLAY_SEARCH_CONTROLS_SUBGROUP}>
             <span className={Constants.DISPLAY_CONTROL_LABEL}>Search Term: </span>
-            <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={props.onChange} value={props.search_text}/>
+            <input type="text" id={Constants.SEARCH_INPUTBOX} onChange={props.onChange} value={props.search_text} autofocus="true" />
         </div>
     );
 }
@@ -71,13 +73,13 @@ function SearchInputbox(props) {
 function SearchButton(props) {
     var label = props.disabled ? 'Enter a search term' : (props.selected_search_type === Constants.REQUEST_TYPE.SINGLE_ARTEFACT ? "Load Artefact" : "Search Collection");
     return (
-        <button className="button" id={Constants.SEARCH_BUTTON} disabled={props.disabled} onClick={props.onClick}>{label}</button>
+        <input type="button" className="button" id={Constants.SEARCH_BUTTON} disabled={props.disabled} onClick={props.onClick} value={label} />
     );
 }
 
 function ResetButton(props) {
     return (
-        <button className="button" id={Constants.RESET_BUTTON} onClick={props.onClick}>Reset</button>
+        <input type="button" className="button" id={Constants.RESET_BUTTON} onClick={props.onClick} value="Reset" />
     );
 }
 
