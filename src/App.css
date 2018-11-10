@@ -66,6 +66,15 @@ label {
   width: 50px;
 }
 
+.narrow_button:disabled {
+  font-weight: bold;
+  background-color:darkslategrey;
+  border: none;
+  color: lightgrey;
+  height: 20px;
+  width: 50px;
+}
+
 
 span.display_control_label {
   font-weight: bold;

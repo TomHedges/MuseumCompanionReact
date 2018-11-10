@@ -1,13 +1,13 @@
 import * as Constants from '../constants/Constants.js';
 
-async function getData(requestType, dataSource, searchTerm) {
-    var url = await buildUrl(requestType, dataSource, searchTerm);
+async function getData(requestType, dataSource, searchTerm, resultsSoFar) {
+    var url = await buildUrl(requestType, dataSource, searchTerm, resultsSoFar);
     var rawData = await makeRemoteDataRequest(url);
     var returnData = await formatRemoteData(requestType, dataSource, rawData);
     return returnData;
 }
 
-async function buildUrl(requestType, dataSource, searchTerm) {
+async function buildUrl(requestType, dataSource, searchTerm, resultsSoFar) {
     var finalURL = null;
 
     switch (requestType) {
@@ -27,7 +27,7 @@ async function buildUrl(requestType, dataSource, searchTerm) {
             console.log('Retrieving Collection Search');
             await import('../institution_functions/Institution_Functions_' + dataSource + '.js')
                 .then(({getSearchResultsURL}) => {
-                    finalURL = getSearchResultsURL(searchTerm);
+                    finalURL = getSearchResultsURL(searchTerm, resultsSoFar);
                 })
                 .catch(err => {
                     //alert('problem!');
@@ -49,6 +49,7 @@ async function makeRemoteDataRequest(url) {
         [Constants.DATA_REQUEST_RAW_DATA]: null,
         [Constants.DATA_REQUEST_PROCESSED_DATA]: null,
     };
+
     await fetch(url, {mode: 'cors'})
         .then(
             (res) => {
@@ -83,18 +84,10 @@ async function makeRemoteDataRequest(url) {
     return returnData;
 }
 
-async function formatRemoteData(requestType, dataSource, rawData) {
-    //var test = {
-    //    [Constants.DATA_REQUEST_STATUS.LOADING]: 'hello world!',
-    //};
-    //alert(test[Constants.DATA_REQUEST_STATUS.LOADING]);
-    //test[Constants.DATA_REQUEST_STATUS.LOADING] = 'bob';
-    //alert(test[Constants.DATA_REQUEST_STATUS.LOADING]);
-  
+async function formatRemoteData(requestType, dataSource, rawData) {  
     if (rawData[Constants.DATA_REQUEST_RESULT] === Constants.DATA_REQUEST_STATUS.SUCCESS) {
         var processedData = null;
-
-
+        
         switch (requestType) {
             case Constants.REQUEST_TYPE.SINGLE_ARTEFACT:
                 await import('../institution_functions/Institution_Functions_' + dataSource + '.js')
@@ -122,8 +115,6 @@ async function formatRemoteData(requestType, dataSource, rawData) {
                 console.log('Processing lord knows what');
                 break;
         }
-
-
         return processedData;
     } else {
         return rawData;

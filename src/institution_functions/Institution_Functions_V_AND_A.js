@@ -1,18 +1,23 @@
 import * as Constants from '../constants/Constants.js';
 
-const PLACEHOLDER = '---OBJECT_ID---'
-const URL_SINGLE_ARTEFACT = 'https://www.vam.ac.uk/api/json/museumobject/' + PLACEHOLDER;
-const URL_SEARCH = 'https://www.vam.ac.uk/api/json/museumobject/search?q=' + PLACEHOLDER;
+const PLACEHOLDER_SEARCH_TERM = '---SEARCH_TERM---';
+const PLACEHOLDER_RECORDS_SO_FAR = '---RECORDS_SO_FAR---';
+const URL_SINGLE_ARTEFACT = 'https://www.vam.ac.uk/api/json/museumobject/' + PLACEHOLDER_SEARCH_TERM;
+const URL_SEARCH = 'https://www.vam.ac.uk/api/json/museumobject/search?q=' + PLACEHOLDER_SEARCH_TERM + "&limit=" + Constants.DATA_REQUEST_LIMIT + "&offset=" + PLACEHOLDER_RECORDS_SO_FAR;
 const URL_IMAGE_ROOT = 'https://media.vam.ac.uk/media/thira/collection_images/';
 
 export function getSingleArtefactURL(objectID) {
-	var replacementRegex = new RegExp(PLACEHOLDER,'g');
+	var replacementRegex = new RegExp(PLACEHOLDER_SEARCH_TERM,'g');
     return(URL_SINGLE_ARTEFACT.replace(replacementRegex, objectID));
 }
 
-export function getSearchResultsURL(search_text) {
-	var replacementRegex = new RegExp(PLACEHOLDER,'g');
-    return(URL_SEARCH.replace(replacementRegex, search_text));
+export function getSearchResultsURL(search_text, resultsSoFar) {
+    var url;
+	var replacementRegexSearchTerm = new RegExp(PLACEHOLDER_SEARCH_TERM,'g');
+    var replacementRegexRecordsSoFar = new RegExp(PLACEHOLDER_RECORDS_SO_FAR,'g');
+    url = URL_SEARCH.replace(replacementRegexSearchTerm, search_text);
+    url = url.replace(replacementRegexRecordsSoFar, resultsSoFar);
+    return url;
 }
 
 export function processSingleArtefactData(rawData) {
@@ -51,11 +56,15 @@ export function processSingleArtefactData(rawData) {
 export function processCollectionSearchData(rawData) {
     var rawSearchData = rawData[Constants.DATA_REQUEST_RAW_DATA];
     var searchResults = [];
+    //var searchResults = {};
+    //earchResults.results = [];
+    //searchResults.totalNumber = 0;
 
     if (rawSearchData.records.length === 0) {
         rawData[Constants.DATA_REQUEST_RESULT] = Constants.DATA_REQUEST_STATUS.FAILURE;
         rawData[Constants.DATA_REQUEST_ERROR] = 'Sorry, your search returned 0 results!';
     } else {
+        //searchResults.totalNumber = rawSearchData.meta.result_count;
         var counter = 0;
         while (counter < rawSearchData.records.length) {
             var fields = {
@@ -69,12 +78,14 @@ export function processCollectionSearchData(rawData) {
             fields.objectSummary = rawSearchData.records[counter].fields.title + ', ' + rawSearchData.records[counter].fields.artist + ', ' + rawSearchData.records[counter].fields.place + ', ' + rawSearchData.records[counter].fields.date_text;
             fields.objectPrimaryImageURL = rawSearchData.records[counter].fields.primary_image_id ? URL_IMAGE_ROOT + rawSearchData.records[counter].fields.primary_image_id.substring(0, 6) + '/' + rawSearchData.records[counter].fields.primary_image_id + '.jpg' : null;
             
+            //searchResults.results.push(fields);
             searchResults.push(fields);
             //console.log(counter);
             //console.log(fields);
             counter++;
         }
         //console.log(searchResults);
+        rawData[Constants.DATA_REQUEST_NUMBER_RESULTS] = rawSearchData.meta.result_count;
         rawData[Constants.DATA_REQUEST_PROCESSED_DATA] = searchResults;
     }
 

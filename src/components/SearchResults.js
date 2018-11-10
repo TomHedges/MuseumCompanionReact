@@ -21,7 +21,7 @@ class SearchResults extends React.Component {
         case Constants.DATA_REQUEST_STATUS.SUCCESS:
           return_value = (
             <div className={Constants.DISPLAY_SEARCH_RESULTS}>
-              <ResultsNavigation selectedNumSearchResults={this.props.selectedNumSearchResults} onChange={this.props.onChange} onClick={this.props.onClick}/>
+              <ResultsNavigation selectedNumSearchResults={this.props.selectedNumSearchResults} searchResultsStartRange={this.props.searchResultsStartRange} searchResultsEndRange={this.props.searchResultsEndRange} searchResultsTotalNumber={this.props.searchResultsTotalNumber} resultsLoaded={this.props.searchData.length} onChange={this.props.onChange} onClick={this.props.onClick}/>
               <table className={Constants.SEARCH_TABLE}>
                 <tbody>
                   <tr>
@@ -29,7 +29,7 @@ class SearchResults extends React.Component {
                     <th className={Constants.SEARCH_TABLE_IMAGE_COLUMN}>Image</th>
                   </tr>
 
-                  {this.props.searchData.map((searchResult, index ) => {
+                  {this.props.searchData.slice(this.props.searchResultsStartRange-1,this.props.searchResultsEndRange).map((searchResult, index ) => {
                     //var id_id = index + '_' + Constants.SEARCH_CELL + '_' + searchResult.objectID;
                     //var id_name = index + '_' + Constants.SEARCH_CELL + '_' + searchResult.objectID;
                     var id_summary = index + '_' + Constants.SEARCH_CELL + '_' + searchResult.objectID;
@@ -72,19 +72,24 @@ class SearchResults extends React.Component {
   }
 
   function ResultsNavigation(props) {
+      var disablePrevious = !(parseInt(props.selectedNumSearchResults, 10) > 0);
+      var disableNext = !(parseInt(props.selectedNumSearchResults, 10) > 0);
+      if (props.searchResultsStartRange === 1) {disablePrevious = true}
+      if (props.searchResultsEndRange === props.searchResultsTotalNumber) {disableNext = true}
       return (
         <div className={Constants.DISPLAY_SEARCH_RESULTS_NAV}>
-          <button className="narrow_button" id={Constants.PREVIOUS_BUTTON} onClick={props.onClick}>&lt; &lt; &lt;</button>
-          <button className="narrow_button" id={Constants.NEXT_BUTTON} onClick={props.onClick}>&gt; &gt; &gt;</button>
-          <p>Results x to y of z. Show: <ResultsDisplayNumberOption value={props.selectedNumSearchResults} onChange={props.onChange}/></p>
+          <button className="narrow_button" id={Constants.PREVIOUS_BUTTON} disabled={disablePrevious} onClick={props.onClick}>&lt; &lt; &lt;</button>
+          <button className="narrow_button" id={Constants.NEXT_BUTTON} disabled={disableNext} onClick={props.onClick}>&gt; &gt; &gt;</button>
+          <p>Results {props.searchResultsStartRange} to {props.searchResultsEndRange} of {props.searchResultsTotalNumber}. Show: <ResultsDisplayNumberOption value={props.selectedNumSearchResults} onChange={props.onChange}/></p>
+          <p>({props.resultsLoaded} results have been downloaded)</p>
         </div>
       );
   }
 
   function ResultsDisplayNumberOption(props) {
       var options = [];
-      var source_values = Object.keys(Constants.NO_RESULTS_TO_SHOW);
-      var source_descriptions = Object.values(Constants.NO_RESULTS_TO_SHOW);
+      var source_values = Object.keys(Constants.NO_OF_RESULTS_TO_SHOW);
+      var source_descriptions = Object.values(Constants.NO_OF_RESULTS_TO_SHOW);
 
       for (var i = 0; i < source_values.length; i++) {
           options.push(<option key={source_values[i]} value={source_values[i]}>{source_descriptions[i]}</option>);

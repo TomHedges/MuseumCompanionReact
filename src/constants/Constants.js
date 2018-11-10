@@ -38,12 +38,15 @@ export const DATA_REQUEST_RESULT = "data_request_result";
 export const DATA_REQUEST_ERROR = "data_request_error";
 export const DATA_REQUEST_RAW_DATA = "data_request_raw_data";
 export const DATA_REQUEST_PROCESSED_DATA = "data_request_processed_data";
+export const DATA_REQUEST_NUMBER_RESULTS = "data_request_number_results";
 export const DATA_REQUEST_STATUS = {
   NONE_MADE: "none",
   LOADING: "loading",
   SUCCESS: "success",
   FAILURE: "failure",
 }
+export const DATA_REQUEST_LIMIT = 20;
+export const DATA_RESULTS_DOWNLOAD_LIMIT = 100;
 
 export const SEARCH_TABLE = "search_table";
 export const SEARCH_TABLE_SUMMARY_COLUMN = "search_table_summary_column";
@@ -57,13 +60,15 @@ export const PREVIOUS_BUTTON = "previous_button";
 export const NEXT_BUTTON = "next_button";
 
 export const SEARCH_RESULTS_NUMBER_SELECT = "search_results_number_select";
-export const NO_RESULTS_TO_SHOW = {
+export const NO_OF_RESULTS_TO_SHOW = {
+  5: 5,
+  10: 10,
   25: 25,
   50: 50,
   100: 100,
   ALL: "All",
 }
-export const DEFAULT_NO_RESULTS_TO_SHOW = "100";
+export const DEFAULT_NO_OF_RESULTS_TO_SHOW = "10";
 export const DISPLAY_SEARCH_CONTROLS = "display_search_controls";
 export const DISPLAY_SEARCH_CONTROLS_GROUP = "display_search_controls_group";
 export const DISPLAY_SEARCH_CONTROLS_SUBGROUP = "display_search_controls_subgroup";

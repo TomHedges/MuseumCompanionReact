@@ -95,7 +95,7 @@ class ArtefactDetails extends React.Component {
     render () {
       return (
         <div>
-          <p>Artefact Full Text:</p>
+          <h2>Artefact Full Text:</h2>
           <SetOfDetails artefactDetails={this.props.objectFullDetails} />
         </div>
       );
@@ -112,8 +112,13 @@ class ArtefactDetails extends React.Component {
     var artefactDetail = detail;
 
     if (Array.isArray(detail.text)) {
-      const subgroup = artefactDetail.text.map((detail, index) => SubGroup(detail, index));
-
+      var subgroup;
+      if (detail.text.length === 1) {
+        subgroup = artefactDetail.text[0].map((detail, index) => DisplayDetails(detail, index));
+      } else {
+        subgroup = artefactDetail.text.map((detail, index) => DisplayDetailsSubGroup(detail, index));
+      }
+        
       return (
         <div key={index} className={Constants.DISPLAY_ARTEFACT_DETAILS_GROUP}>
           <h3 className={Constants.DISPLAY_ARTEFACT_DETAILS_SUBHEADING}>{artefactDetail.title}:</h3>
@@ -130,7 +135,7 @@ class ArtefactDetails extends React.Component {
     }
   }
 
-  function SubGroup(detail, index) {
+  function DisplayDetailsSubGroup(detail, index) {
     const subgroupdetails = detail.map((inner_detail, index) => DisplayDetails(inner_detail, index));
     var ordinal = ordinal_suffix_of(index + 1);
     return (
