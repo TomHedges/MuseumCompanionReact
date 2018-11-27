@@ -106,6 +106,12 @@ class App extends React.Component {
 						this.state.searchResultsEndRange
 							? returnData[Constants.DATA_REQUEST_NUMBER_RESULTS]
 							: this.state.searchResultsEndRange;
+					maxNumberToDisplay =
+						maxNumberToDisplay >
+						returnData[Constants.DATA_REQUEST_NUMBER_RESULTS]
+							? returnData[Constants.DATA_REQUEST_NUMBER_RESULTS]
+							: maxNumberToDisplay;
+
 					var newSearchResultRequestLimit =
 						this.state.searchResultsEndRange +
 							Constants.DATA_RESULTS_DOWNLOAD_LIMIT <=
@@ -380,6 +386,7 @@ class App extends React.Component {
 						  1 +
 						  Constants.DATA_RESULTS_DOWNLOAD_LIMIT
 						: this.state.searchResultsTotalNumber;
+
 			if (
 				event.target[event.target.selectedIndex].text ===
 					Constants.NO_OF_RESULTS_TO_SHOW.ALL
@@ -392,12 +399,17 @@ class App extends React.Component {
 				});
 				newSearchResultRequestLimit = this.state.searchResultsTotalNumber;
 			} else {
+				var upperLimit =
+						this.state.searchResultsStartRange +
+						parseInt(event.target.value, 10) -
+						1;
+				upperLimit =
+						upperLimit > this.state.searchResultsTotalNumber
+							? this.state.searchResultsTotalNumber
+							: upperLimit;
 				this.setState({
 					selectedNumSearchResults: event.target.value,
-					searchResultsEndRange:
-							this.state.searchResultsStartRange +
-							parseInt(event.target.value, 10) -
-							1,
+					searchResultsEndRange: upperLimit,
 					searchResultRequestLimit: newSearchResultRequestLimit
 				});
 			}
