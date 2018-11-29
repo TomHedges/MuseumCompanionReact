@@ -37,26 +37,26 @@
   }
 }
 
-.tab-wrapper {
+.display_tab_wrapper {
   background-color: rgb(44, 44, 158);
   width: 100%;
   min-height: 30px;
 }
-.tab-filler {
+.display_tab_filler {
   background-color: rgba(0, 0, 0, 0);
   overflow: hidden;
   height: 34px;
   border-bottom: 1px red solid;
 }
 
-input.tab:focus {
+input.display_tab:focus {
   outline: none;
 }
-input.tab-selected:focus {
+input.display_tab_selected:focus {
   outline: none;
 }
 
-.tab {
+.display_tab {
   margin-top: 10px;
   font-weight: bold;
   height: 25px;
@@ -82,7 +82,7 @@ input.tab-selected:focus {
     );
 }
 
-.tab-selected {
+.display_tab_selected {
   margin-top: 10px;
   font-weight: bold;
   height: 25px;

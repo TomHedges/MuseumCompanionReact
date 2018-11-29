@@ -3,6 +3,7 @@ import * as Constants from './constants/Constants.js';
 import SearchControls from './components/SearchControls.js';
 import SearchResults from './components/SearchResults.js';
 import ArtefactDetails from './components/ArtefactDetails.js';
+import MainMenu from './components/MainMenu.js';
 import getData from './dataAccess/RemoteDataAccess.js';
 import logo from './logo.svg';
 import './App.css';
@@ -28,7 +29,6 @@ class App extends React.Component {
 			artefactId: null,
 			display_artefact_search: true,
 			display_exhibition_builder: false,
-			testing: 'blah',
 			singleArtefactDataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
 			singleArtefactRawData: [],
 			singleArtefactProcessedData: [],
@@ -478,29 +478,11 @@ class App extends React.Component {
 						Museum Companion
 					</h2>
 				</div>
-				<div className="tab-wrapper">
-					<input
-						type="button"
-						className={
-							this.state.display_artefact_search ? 'tab-selected' : 'tab'
-						}
-						id={Constants.ARTEFACTS_BUTTON}
-						value="Artefact Search"
-						onClick={this.handleClick}
-						disabled={this.state.display_artefact_search}
-					/>
-					<input
-						type="button"
-						className={
-							this.state.display_exhibition_builder ? 'tab-selected' : 'tab'
-						}
-						id={Constants.EXHIBITION_BUTTON}
-						value="Exhibition Builder"
-						onClick={this.handleClick}
-						disabled={this.state.display_exhibition_builder}
-					/>
-					<div className="tab-filler" />
-				</div>
+				<MainMenu
+					display_artefact_search={this.state.display_artefact_search}
+					display_exhibition_builder={this.state.display_exhibition_builder}
+					onClick={this.handleClick}
+				/>
 				{this.state.display_artefact_search ? (
 					<>
 						<SearchControls

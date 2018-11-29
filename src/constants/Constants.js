@@ -71,6 +71,13 @@ export const NO_OF_RESULTS_TO_SHOW = {
 	ALL: 'All'
 };
 export const DEFAULT_NO_OF_RESULTS_TO_SHOW = '50';
+
+export const DISPLAY_TAB_WRAPPER = 'display_tab_wrapper';
+export const DISPLAY_TAB_FILLER = 'display_tab_filler';
+export const DISPLAY_TAB = 'display_tab';
+export const DISPLAY_TAB_SELECTED = 'display_tab_selected';
+export const DISPLAY_ = 'display_';
+
 export const DISPLAY_SEARCH_CONTROLS = 'display_search_controls';
 export const DISPLAY_SEARCH_CONTROLS_GROUP = 'display_search_controls_group';
 export const DISPLAY_SEARCH_CONTROLS_SUBGROUP =
