@@ -56,6 +56,8 @@ export const SEARCH_RESULT_NAME = 'search_result_name';
 export const SEARCH_PREVIEW_IMAGE = 'search_preview_image';
 export const ARTEFACT_PREVIEW_IMAGE = 'artefact_preview_image';
 
+export const ARTEFACTS_BUTTON = 'artefacts_button';
+export const EXHIBITION_BUTTON = 'exhibition_button';
 export const PREVIOUS_BUTTON = 'previous_button';
 export const NEXT_BUTTON = 'next_button';
 

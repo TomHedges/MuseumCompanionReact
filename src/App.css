@@ -29,24 +29,95 @@
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tab-wrapper {
+  background-color: rgb(44, 44, 158);
+  width: 100%;
+  min-height: 30px;
+}
+.tab-filler {
+  background-color: rgba(0, 0, 0, 0);
+  overflow: hidden;
+  height: 34px;
+  border-bottom: 1px red solid;
+}
+
+input.tab:focus {
+  outline: none;
+}
+input.tab-selected:focus {
+  outline: none;
+}
+
+.tab {
+  margin-top: 10px;
+  font-weight: bold;
+  height: 25px;
+  width: 150px;
+  float: left;
+  left: -20px;
+  border: none;
+  border-bottom: 1px solid red;
+  color: rgb(109, 109, 255);
+  background: linear-gradient(
+      120deg,
+      rgba(156, 46, 46, 0) 8%,
+      rgb(15, 0, 70) 8%,
+      rgb(15, 0, 70) 60%,
+      rgba(0, 0, 0, 0) 60%
+    ),
+    linear-gradient(
+      60deg,
+      rgba(0, 0, 0, 0) 40%,
+      rgb(15, 0, 70) 40%,
+      rgb(15, 0, 70) 92%,
+      rgba(156, 46, 46, 0) 92%
+    );
+}
+
+.tab-selected {
+  margin-top: 10px;
+  font-weight: bold;
+  height: 25px;
+  width: 150px;
+  float: left;
+  border: none;
+  border-bottom: 1px solid white;
+  color: rgb(9, 9, 85);
+  background: linear-gradient(
+      120deg,
+      rgb(44, 44, 158) 11px,
+      red 11px,
+      rgba(0, 0, 0, 0) 13px
+    ),
+    linear-gradient(
+      60deg,
+      rgba(0, 0, 0, 0) 127px,
+      red 130px,
+      rgb(44, 44, 158) 131px
+    ),
+    linear-gradient(180deg, red 1px, white 2px);
 }
 
 label {
   margin-right: 10px;
   font-size: smaller;
 }
-
 .button {
   font-weight: bold;
-  background-color:green;
+  background-color: green;
   border: none;
   color: white;
   height: 20px;
   width: 150px;
 }
-
 .button:disabled {
   vertical-align: bottom;
   font-weight: bold;
@@ -56,127 +127,99 @@ label {
   height: 20px;
   width: 150px;
 }
-
 .narrow_button {
   font-weight: bold;
-  background-color:green;
+  background-color: green;
   border: none;
   color: white;
   height: 20px;
   width: 50px;
 }
-
 .narrow_button:disabled {
   font-weight: bold;
-  background-color:darkslategrey;
+  background-color: darkslategrey;
   border: none;
   color: lightgrey;
   height: 20px;
   width: 50px;
 }
-
-
 span.display_control_label {
   font-weight: bold;
   min-width: 110px;
   display: inline-block;
 }
-
-
 div.display_search_controls {
   margin: auto;
   width: 1400px;
-  margin-bottom: 15px;
-  /*
-  border: 1px solid green;
-  */
+  margin-bottom: 15px; /* border: 1px solid green; */
 }
-
 @media only screen and (max-width: 1400px) {
   div.display_search_controls {
     width: 725px;
   }
 }
-
 @media only screen and (max-width: 750px) {
   div.display_search_controls {
     width: 100%;
   }
 }
-
 div.display_search_controls_group {
   min-width: 400px;
   margin: auto;
-  float: left;
-  /*
-  border: 1px solid red;
-  */
+  float: left; /* border: 1px solid red; */
 }
-
 @media only screen and (max-width: 750px) {
   div.display_search_controls_group {
     width: 400px;
     float: none;
   }
 }
-
 div.display_search_controls_subgroup {
   margin-left: 15px;
   margin-top: 15px;
   margin-right: 10px;
   float: left;
 }
-
 div.display_search_controls_subgroup input[type="radio"] {
   margin-top: -3px;
   vertical-align: middle;
 }
-
 @media only screen and (max-width: 750px) {
   div.display_search_controls_subgroup {
     float: none;
   }
 }
-
 input#search_button {
   margin-left: 15px;
   margin-top: 15px;
   margin-right: 10px;
 }
-
 input#reset_button {
   margin-left: 15px;
   margin-top: 15px;
 }
-
-
 button#previous_button {
   float: left;
   margin-left: 15px;
   margin-bottom: 15px;
   width: 130px;
 }
-
 @media only screen and (max-width: 750px) {
   button#previous_button {
     width: 17%;
   }
 }
-
 button#next_button {
   float: right;
   margin-right: 15px;
   margin-bottom: 15px;
   width: 130px;
 }
-
 @media only screen and (max-width: 750px) {
   button#next_button {
     width: 17%;
   }
 }
-
-
 div.display_search_results_nav {
   margin-top: 15px;
 }
@@ -186,27 +229,24 @@ div.display_search_results_nav p {
   width: 100%;
   clear: both;
 }
-
 @media only screen and (max-width: 750px) {
   div.display_search_results_nav p {
     width: 250px;
     margin: 0 auto 15px auto;
     clear: inherit;
-  } 
+  }
 }
-
-
 table.search_table {
   border-collapse: collapse;
   table-layout: auto;
   width: 100%;
 }
-
-table.search_table, th, td {
+table.search_table,
+th,
+td {
   border-top: 1px solid #44f;
   padding: 15px;
 }
-
 table.search_table th.search_table_summary_column {
   width: 60%;
   min-width: 140px;
@@ -215,7 +255,6 @@ table.search_table th.search_table_image_column {
   width: 40%;
   min-width: 100px;
 }
-
 table.search_table td {
   overflow: hidden;
 }
@@ -224,49 +263,36 @@ table.search_table td {
   width: 100px;
 }
 
-
 .search_result_name {
   font-weight: bold;
 }
 
-
-
 div.display_search_results {
   width: 20%;
   min-width: 310px;
-  float: left;
-  /* 
-  border: 1px solid red;
-  */
+  float: left; /* border: 1px solid red; */
   background: #eef;
   margin-left: 15px;
   margin-right: 15px;
   margin-bottom: 15px;
   padding-top: 1px;
 }
-
 @media only screen and (max-width: 750px) {
   div.display_search_results {
     width: auto;
     float: none;
   }
 }
-
-
 div.display_search_results_message {
   width: 20%;
   min-width: 310px;
-  float: left;
-  /* 
-  border: 1px solid red;
-  */
+  float: left; /* border: 1px solid red; */
   background: #eef;
   margin-left: 15px;
   margin-right: 15px;
   margin-bottom: 15px;
   text-align: center;
 }
-
 @media only screen and (max-width: 750px) {
   div.display_search_results_message {
     padding: 1px 0;
@@ -274,43 +300,32 @@ div.display_search_results_message {
     float: none;
   }
 }
-
-
-
 div.display_artefact_content {
-  /* 
-  border: 1px solid blue;
-   */
-
+  /* border: 1px solid blue; */
   background: #eef;
   padding-left: 15px;
   padding-right: 15px;
   margin-left: 15px;
   margin-right: 15px;
-  
   overflow: auto;
-
   /* These are technically the same, but use both
   overflow-wrap: break-word;
   word-wrap: break-word;
 
   /* Instead use this non-standard one: */
   word-break: break-word;
-
   /* Adds a hyphen where the word breaks, if supported (No Blink) */
   -ms-hyphens: auto;
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
 }
-
 @media only screen and (max-width: 750px) {
   div.display_artefact_content {
     width: auto;
     float: none;
   }
 }
-
 div.display_artefact_message {
   /* border: 1px solid red; */
   text-align: center;
@@ -321,11 +336,9 @@ div.display_artefact_message {
   background: #eef;
   margin-left: 15px;
   margin-right: 15px;
-
   overflow: auto;
   word-break: break-word;
 }
-
 div.display_artefact_message_error {
   border: 1px solid red;
   padding-left: 15px;
@@ -335,12 +348,10 @@ div.display_artefact_message_error {
   background: #fee;
   margin-left: 15px;
   margin-right: 15px;
-
   font-weight: bold;
   overflow: auto;
   word-break: break-word;
 }
-
 div.display_primary_image_wrapper {
   max-height: 500px;
 }
@@ -353,13 +364,10 @@ img.display_primary_image {
   max-width: 100%;
   height: auto;
 }
-
-
 div.galleryPane {
   height: 100px;
   margin-top: 20px;
 }
-
 div.galleryPane img {
   border: 3px solid #aaf;
   max-width: 200px;
@@ -368,48 +376,39 @@ div.galleryPane img {
   margin-left: auto;
   margin-right: auto;
 }
-
 div.galleryPane img:hover {
   border: 3px solid #44f;
+
   max-width: 200px;
   max-height: 100px;
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
-
 div.responsive {
   float: left;
   width: 24.999999%;
   box-sizing: border-box;
 }
-
 @media only screen and (max-width: 1250px) {
   div.responsive {
-      width: 33.333333%;
+    width: 33.333333%;
   }
 }
-
 @media only screen and (max-width: 1000px) {
   div.responsive {
-      width: 49.99999%;
+    width: 49.99999%;
   }
 }
-
-/*
-@media only screen and (max-width: 475px) {
+/* @media only screen and (max-width: 475px) {
   div.responsive {
       width: 100%;
       box-sizing: border-box;
   }
-}
-*/
-
-
+} */
 div.display_artefact_details_group {
   border-top: 1px solid #44f;
 }
-
 div.display_artefact_details_subgroup {
   padding-left: 25px;
 }
@@ -426,42 +425,32 @@ div.display_artefact_details_group p {
   margin-top: 0;
 }
 
-
 .clearfix:after {
   content: "";
   display: table;
   clear: both;
 }
-
-
 .centeredOverlay {
   position: absolute;
-  /*
-  dim the background
-  background-color: rgba(255, 0, 0, 0.3);
-  */
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  color:black;
+  /* dim the background
+  background-color: rgba(255, 0, 0, 0.3); */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: black;
   text-align: center;
 }
-
 .centeredOverlay span {
   position: absolute;
-  top:50%;
-  left:50%;
-  -webkit-transform:translate(-50%, -50%);
-  transform:translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
-
 .wrapper {
   position: relative;
 }
-
-
-
 
 .spinner {
   border: 16px solid #f3f3f3;
@@ -472,14 +461,20 @@ div.display_artefact_details_group p {
   -webkit-animation: gallery-loading-spin 2s linear infinite; /* Safari */
   animation: gallery-loading-spin 2s linear infinite;
 }
-
 /* Safari */
 @-webkit-keyframes gallery-loading-spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }
-
 @keyframes gallery-loading-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

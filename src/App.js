@@ -26,6 +26,8 @@ class App extends React.Component {
 			searchResultRequestLimit: Constants.DATA_RESULTS_DOWNLOAD_LIMIT,
 			searchText: '',
 			artefactId: null,
+			display_artefact_search: true,
+			display_exhibition_builder: false,
 			testing: 'blah',
 			singleArtefactDataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
 			singleArtefactRawData: [],
@@ -174,6 +176,15 @@ class App extends React.Component {
 			});
 	}
 
+	async internal_data_retrieval() {
+		await fetch('/api/getData')
+			.then(data => data.json())
+			.then(res => {
+				this.setState({ internal_data: res.data });
+				console.log(res.data);
+			});
+	}
+
 	handleClick(event) {
 		event.preventDefault();
 
@@ -319,6 +330,22 @@ class App extends React.Component {
 			}
 			break;
 
+		case Constants.ARTEFACTS_BUTTON:
+			//this.internal_data_retrieval();
+			this.setState({
+				display_artefact_search: true,
+				display_exhibition_builder: false
+			});
+			break;
+
+		case Constants.EXHIBITION_BUTTON:
+			//this.internal_data_retrieval();
+			this.setState({
+				display_exhibition_builder: true,
+				display_artefact_search: false
+			});
+			break;
+
 		case Constants.SEARCH_CELL:
 		case Constants.SEARCH_PREVIEW_IMAGE:
 			var artefact_id = event.target.id.substring(
@@ -451,36 +478,65 @@ class App extends React.Component {
 						Museum Companion
 					</h2>
 				</div>
-				<SearchControls
-					selected_source={this.state.selectedSource}
-					selected_search_type={this.state.selectedSearchType}
-					search_text={this.state.searchText}
-					onChange={this.handleChange}
-					onClick={this.handleClick}
-				/>
-				<div className="external-data">
-					<SearchResults
-						dataRequestStatus={this.state.searchResultsDataRequestStatus}
-						searchData={this.state.searchResultsProcessedData}
-						errorMessage={this.state.searchResultsErrorMessage}
-						selectedNumSearchResults={this.state.selectedNumSearchResults}
-						searchResultsStartRange={this.state.searchResultsStartRange}
-						searchResultsEndRange={this.state.searchResultsEndRange}
-						searchResultsTotalNumber={this.state.searchResultsTotalNumber}
-						searchResultsBackgroundDataRequestStatus={
-							this.state.searchResultsBackgroundDataRequestStatus
+				<div className="tab-wrapper">
+					<input
+						type="button"
+						className={
+							this.state.display_artefact_search ? 'tab-selected' : 'tab'
 						}
-						onChange={this.handleChange}
+						id={Constants.ARTEFACTS_BUTTON}
+						value="Artefact Search"
 						onClick={this.handleClick}
+						disabled={this.state.display_artefact_search}
 					/>
-					<ArtefactDetails
-						dataRequestStatus={this.state.singleArtefactDataRequestStatus}
-						source={this.state.lastSearchSource}
-						objectData={this.state.singleArtefactProcessedData}
-						errorMessage={this.state.singleArtefactErrorMessage}
+					<input
+						type="button"
+						className={
+							this.state.display_exhibition_builder ? 'tab-selected' : 'tab'
+						}
+						id={Constants.EXHIBITION_BUTTON}
+						value="Exhibition Builder"
 						onClick={this.handleClick}
+						disabled={this.state.display_exhibition_builder}
 					/>
+					<div className="tab-filler" />
 				</div>
+				{this.state.display_artefact_search ? (
+					<>
+						<SearchControls
+							selected_source={this.state.selectedSource}
+							selected_search_type={this.state.selectedSearchType}
+							search_text={this.state.searchText}
+							onChange={this.handleChange}
+							onClick={this.handleClick}
+						/>
+						<div className="external-data">
+							<SearchResults
+								dataRequestStatus={this.state.searchResultsDataRequestStatus}
+								searchData={this.state.searchResultsProcessedData}
+								errorMessage={this.state.searchResultsErrorMessage}
+								selectedNumSearchResults={this.state.selectedNumSearchResults}
+								searchResultsStartRange={this.state.searchResultsStartRange}
+								searchResultsEndRange={this.state.searchResultsEndRange}
+								searchResultsTotalNumber={this.state.searchResultsTotalNumber}
+								searchResultsBackgroundDataRequestStatus={
+									this.state.searchResultsBackgroundDataRequestStatus
+								}
+								onChange={this.handleChange}
+								onClick={this.handleClick}
+							/>
+							<ArtefactDetails
+								dataRequestStatus={this.state.singleArtefactDataRequestStatus}
+								source={this.state.lastSearchSource}
+								objectData={this.state.singleArtefactProcessedData}
+								errorMessage={this.state.singleArtefactErrorMessage}
+								onClick={this.handleClick}
+							/>
+						</div>
+					</>
+				) : (
+					<h2>To implement - Exhibition builder!</h2>
+				)}
 			</div>
 		);
 	}
