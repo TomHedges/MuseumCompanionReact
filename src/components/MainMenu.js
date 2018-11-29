@@ -6,29 +6,23 @@ class MainMenu extends React.Component {
 	render() {
 		return (
 			<div className={Constants.DISPLAY_TAB_WRAPPER}>
-				<input
-					type="button"
-					className={
-						this.props.display_artefact_search
-							? Constants.DISPLAY_TAB_SELECTED
-							: Constants.DISPLAY_TAB
-					}
+				<MenuTab
 					id={Constants.ARTEFACTS_BUTTON}
-					value="Artefact Search"
+					label="Artefact Search"
+					selected={this.props.display_artefact_search}
 					onClick={this.props.onClick}
-					disabled={this.props.display_artefact_search}
 				/>
-				<input
-					type="button"
-					className={
-						this.props.display_exhibition_builder
-							? Constants.DISPLAY_TAB_SELECTED
-							: Constants.DISPLAY_TAB
-					}
+				<MenuTab
 					id={Constants.EXHIBITION_BUTTON}
-					value="Exhibition Builder"
+					label="Exhibition Builder"
+					selected={this.props.display_exhibition_builder}
 					onClick={this.props.onClick}
-					disabled={this.props.display_exhibition_builder}
+				/>
+				<MenuTab
+					id={Constants.USER_PROFILE_BUTTON}
+					label="User Profile"
+					selected={this.props.display_user_management}
+					onClick={this.props.onClick}
 				/>
 				<div className={Constants.DISPLAY_TAB_FILLER} />
 			</div>
@@ -36,10 +30,26 @@ class MainMenu extends React.Component {
 	}
 }
 
+function MenuTab(props) {
+	return (
+		<input
+			type="button"
+			className={
+				props.selected ? Constants.DISPLAY_TAB_SELECTED : Constants.DISPLAY_TAB
+			}
+			id={props.id}
+			value={props.label}
+			onClick={props.onClick}
+			disabled={props.selected}
+		/>
+	);
+}
+
 export default MainMenu;
 
 MainMenu.propTypes = {
 	display_artefact_search: PropTypes.bool.isRequired,
 	display_exhibition_builder: PropTypes.bool.isRequired,
+	display_user_management: PropTypes.bool.isRequired,
 	onClick: PropTypes.func.isRequired
 };

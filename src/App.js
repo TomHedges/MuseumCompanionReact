@@ -4,6 +4,8 @@ import SearchControls from './components/SearchControls.js';
 import SearchResults from './components/SearchResults.js';
 import ArtefactDetails from './components/ArtefactDetails.js';
 import MainMenu from './components/MainMenu.js';
+import ExhibitionBuilder from './components/ExhibitionBuilder.js';
+import UserProfile from './components/UserProfile.js';
 import getData from './dataAccess/RemoteDataAccess.js';
 import logo from './logo.svg';
 import './App.css';
@@ -27,8 +29,10 @@ class App extends React.Component {
 			searchResultRequestLimit: Constants.DATA_RESULTS_DOWNLOAD_LIMIT,
 			searchText: '',
 			artefactId: null,
+			display_page: Constants.PAGES.ARTEFACT_SEARCH,
 			display_artefact_search: true,
 			display_exhibition_builder: false,
+			display_user_management: false,
 			singleArtefactDataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
 			singleArtefactRawData: [],
 			singleArtefactProcessedData: [],
@@ -333,16 +337,29 @@ class App extends React.Component {
 		case Constants.ARTEFACTS_BUTTON:
 			//this.internal_data_retrieval();
 			this.setState({
+				display_page: Constants.PAGES.ARTEFACT_SEARCH,
 				display_artefact_search: true,
-				display_exhibition_builder: false
+				display_exhibition_builder: false,
+				display_user_management: false
 			});
 			break;
 
 		case Constants.EXHIBITION_BUTTON:
 			//this.internal_data_retrieval();
 			this.setState({
+				display_page: Constants.PAGES.EXHIBITION_BUILDER,
+				display_artefact_search: false,
 				display_exhibition_builder: true,
-				display_artefact_search: false
+				display_user_management: false
+			});
+			break;
+
+		case Constants.USER_PROFILE_BUTTON:
+			this.setState({
+				display_page: Constants.PAGES.USER_MANAGEMENT,
+				display_artefact_search: false,
+				display_exhibition_builder: false,
+				display_user_management: true
 			});
 			break;
 
@@ -469,21 +486,10 @@ class App extends React.Component {
 		}
 	}
 
-	render() {
-		return (
-			<div className="App">
-				<div className="App-header">
-					<h2>
-						<img src={logo} className="App-logo" alt="logo" />
-						Museum Companion
-					</h2>
-				</div>
-				<MainMenu
-					display_artefact_search={this.state.display_artefact_search}
-					display_exhibition_builder={this.state.display_exhibition_builder}
-					onClick={this.handleClick}
-				/>
-				{this.state.display_artefact_search ? (
+	getPage() {
+		switch (this.state.display_page) {
+		case Constants.PAGES.ARTEFACT_SEARCH:
+			return (
 					<>
 						<SearchControls
 							selected_source={this.state.selectedSource}
@@ -516,9 +522,38 @@ class App extends React.Component {
 							/>
 						</div>
 					</>
-				) : (
-					<h2>To implement - Exhibition builder!</h2>
-				)}
+			);
+			break;
+
+		case Constants.PAGES.EXHIBITION_BUILDER:
+			return <ExhibitionBuilder />;
+			break;
+
+		case Constants.PAGES.USER_MANAGEMENT:
+			return <UserProfile />;
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	render() {
+		return (
+			<div className="App">
+				<div className="App-header">
+					<h2>
+						<img src={logo} className="App-logo" alt="logo" />
+						Museum Companion
+					</h2>
+				</div>
+				<MainMenu
+					display_artefact_search={this.state.display_artefact_search}
+					display_exhibition_builder={this.state.display_exhibition_builder}
+					display_user_management={this.state.display_user_management}
+					onClick={this.handleClick}
+				/>
+				{this.getPage()}
 			</div>
 		);
 	}

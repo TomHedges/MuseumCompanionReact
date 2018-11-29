@@ -16,6 +16,12 @@ export const SOURCES = {
 };
 export const DEFAULT_SOURCE = 'V_AND_A';
 
+export const PAGES = {
+	ARTEFACT_SEARCH: 'artefact_search',
+	EXHIBITION_BUILDER: 'exhibition_builder',
+	USER_MANAGEMENT: 'user_management'
+};
+
 export const MESSAGE_NO_IMAGE = 'No image of this artefact is available';
 
 export const DATA_FIELDS = {
@@ -58,6 +64,7 @@ export const ARTEFACT_PREVIEW_IMAGE = 'artefact_preview_image';
 
 export const ARTEFACTS_BUTTON = 'artefacts_button';
 export const EXHIBITION_BUTTON = 'exhibition_button';
+export const USER_PROFILE_BUTTON = 'user_profile_button';
 export const PREVIOUS_BUTTON = 'previous_button';
 export const NEXT_BUTTON = 'next_button';
 
