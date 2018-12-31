@@ -8,6 +8,7 @@ class ExhibitionBuilder extends React.Component {
 			<div>
 				<h1>Exhibition Builder</h1>
 				<p>To be implemented...</p>
+				<p>Payload: {JSON.stringify(this.props.internal_data)}</p>
 			</div>
 		);
 	}

@@ -6,7 +6,8 @@ import ArtefactDetails from './components/ArtefactDetails.js';
 import MainMenu from './components/MainMenu.js';
 import ExhibitionBuilder from './components/ExhibitionBuilder.js';
 import UserProfile from './components/UserProfile.js';
-import getData from './dataAccess/RemoteDataAccess.js';
+import remoteDataAccess from './dataAccess/RemoteDataAccess.js';
+import * as LocalDataAccess from './dataAccess/LocalDataAccess.js';
 import logo from './logo.svg';
 import './App.css';
 
@@ -29,10 +30,16 @@ class App extends React.Component {
 			searchResultRequestLimit: Constants.DATA_RESULTS_DOWNLOAD_LIMIT,
 			searchText: '',
 			artefactId: null,
-			display_page: Constants.PAGES.ARTEFACT_SEARCH,
-			display_artefact_search: true,
-			display_exhibition_builder: false,
-			display_user_management: false,
+			display_page: Constants.PAGES.USER_MANAGEMENT,
+			user_status: Constants.USER_STATUS.LOGGED_OUT,
+			user_id: null,
+			username: null,
+			status_message: '',
+			user_management_selector: Constants.SELECTOR_NONE,
+			user_management_username: '2ndGo',
+			user_management_email: 'bob@bob.com',
+			user_management_password: 'test',
+			user_management_passwordconf: 'testy',
 			singleArtefactDataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
 			singleArtefactRawData: [],
 			singleArtefactProcessedData: [],
@@ -66,7 +73,7 @@ class App extends React.Component {
 			searchResultRequestLimit: Constants.DATA_RESULTS_DOWNLOAD_LIMIT,
 			searchText: '',
 			artefactId: null,
-			testing: 'blah',
+			user_management_selector: null,
 			singleArtefactDataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
 			singleArtefactRawData: [],
 			singleArtefactProcessedData: [],
@@ -85,7 +92,7 @@ class App extends React.Component {
 		var resultsSoFar = this.state.searchResultsProcessedData
 			? this.state.searchResultsProcessedData.length
 			: 0;
-		getData(searchType, selectedSource, searchText, resultsSoFar)
+		remoteDataAccess(searchType, selectedSource, searchText, resultsSoFar)
 			.then(returnData => {
 				var dataRequestStatus = searchType + 'DataRequestStatus';
 				var errorMessage = searchType + 'ErrorMessage';
@@ -180,22 +187,13 @@ class App extends React.Component {
 			});
 	}
 
-	async internal_data_retrieval() {
-		await fetch('/api/getData')
-			.then(data => data.json())
-			.then(res => {
-				this.setState({ internal_data: res.data });
-				console.log(res.data);
-			});
-	}
-
 	handleClick(event) {
 		event.preventDefault();
 
-		console.log('handleClick fired by: ' + event.type);
-		console.log('handleClick fired by: ' + event.target);
+		//console.log('handleClick fired by: ' + event.type);
+		//console.log('handleClick fired by: ' + event.target);
 		console.log('handleClick fired by: ' + event.target.id);
-		console.log('handleClick fired by: ' + event.target.className);
+		//console.log('handleClick fired by: ' + event.target.className);
 
 		var category =
 			event.target.className === Constants.SEARCH_CELL ||
@@ -262,6 +260,92 @@ class App extends React.Component {
 
 		case Constants.RESET_BUTTON:
 			this.stateReset();
+			break;
+
+		case Constants.REGISTER_BUTTON:
+			this.setState(
+				{
+					user_status: Constants.USER_STATUS.REQUEST_PENDING
+				},
+				() => {
+					LocalDataAccess.register_new_user(
+						this.state.user_management_username,
+						this.state.user_management_email,
+						this.state.user_management_password,
+						this.state.user_management_passwordconf
+					).then(returned_data => {
+						if (
+							returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS
+						) {
+							this.setState({
+								user_status: Constants.USER_STATUS.LOGGED_IN,
+								status_message: returned_data.internal_data
+							});
+						} else {
+							//console.log('login error');
+							//return 'login error';
+							this.setState({
+								user_status: Constants.USER_STATUS.LOGIN_FAILED,
+								status_message: returned_data.internal_data
+							});
+						}
+					});
+				}
+			);
+
+			break;
+
+		case Constants.LOGIN_BUTTON:
+			this.setState(
+				{
+					user_status: Constants.USER_STATUS.REQUEST_PENDING
+				},
+				() => {
+					LocalDataAccess.login(
+						this.state.user_management_email,
+						this.state.user_management_password
+					).then(returned_data => {
+						if (
+							returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS
+						) {
+							this.setState({
+								user_status: Constants.USER_STATUS.LOGGED_IN,
+								status_message: returned_data.internal_data
+							});
+						} else {
+							//console.log('login error');
+							//return 'login error';
+							this.setState({
+								user_status: Constants.USER_STATUS.LOGIN_FAILED,
+								status_message: returned_data.internal_data
+							});
+						}
+					});
+				}
+			);
+			break;
+
+		case Constants.LOGOUT_BUTTON:
+			this.setState(
+				{
+					user_status: Constants.USER_STATUS.REQUEST_PENDING
+				},
+				() => {
+					LocalDataAccess.logout().then(returned_data => {
+						if (
+							returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS
+						) {
+							this.setState({
+								user_status: Constants.USER_STATUS.LOGGED_OUT,
+								status_message: returned_data.internal_data
+							});
+						} else {
+							console.log('logout error');
+							return 'logout error';
+						}
+					});
+				}
+			);
 			break;
 
 		case Constants.PREVIOUS_BUTTON:
@@ -335,31 +419,34 @@ class App extends React.Component {
 			break;
 
 		case Constants.ARTEFACTS_BUTTON:
-			//this.internal_data_retrieval();
 			this.setState({
 				display_page: Constants.PAGES.ARTEFACT_SEARCH,
-				display_artefact_search: true,
-				display_exhibition_builder: false,
-				display_user_management: false
+				status_message: ''
 			});
 			break;
 
 		case Constants.EXHIBITION_BUTTON:
-			//this.internal_data_retrieval();
 			this.setState({
 				display_page: Constants.PAGES.EXHIBITION_BUILDER,
-				display_artefact_search: false,
-				display_exhibition_builder: true,
-				display_user_management: false
+				status_message: ''
 			});
 			break;
 
-		case Constants.USER_PROFILE_BUTTON:
+		case Constants.USER_MANAGEMENT_BUTTON:
 			this.setState({
-				display_page: Constants.PAGES.USER_MANAGEMENT,
-				display_artefact_search: false,
-				display_exhibition_builder: false,
-				display_user_management: true
+				display_page: Constants.PAGES.USER_MANAGEMENT
+			});
+			break;
+
+		case Constants.SELECTOR_LOGIN:
+			this.setState({
+				user_management_selector: Constants.SELECTOR_LOGIN
+			});
+			break;
+
+		case Constants.SELECTOR_REGISTER:
+			this.setState({
+				user_management_selector: Constants.SELECTOR_REGISTER
 			});
 			break;
 
@@ -415,6 +502,30 @@ class App extends React.Component {
 		case Constants.SEARCH_SOURCE_SELECT:
 			this.setState({
 				selectedSource: event.target.value
+			});
+			break;
+
+		case Constants.INPUT_TEXT_USERNAME:
+			this.setState({
+				user_management_username: event.target.value
+			});
+			break;
+
+		case Constants.INPUT_TEXT_EMAIL:
+			this.setState({
+				user_management_email: event.target.value
+			});
+			break;
+
+		case Constants.INPUT_TEXT_PASSWORD:
+			this.setState({
+				user_management_password: event.target.value
+			});
+			break;
+
+		case Constants.INPUT_TEXT_PASSWORDCONF:
+			this.setState({
+				user_management_passwordconf: event.target.value
 			});
 			break;
 
@@ -523,15 +634,33 @@ class App extends React.Component {
 						</div>
 					</>
 			);
-			break;
 
 		case Constants.PAGES.EXHIBITION_BUILDER:
-			return <ExhibitionBuilder />;
-			break;
+			return (
+				<ExhibitionBuilder
+					user_status={this.state.user_status}
+					user_id={this.state.user_id}
+					status_message={this.state.status_message}
+					onClick={this.handleClick}
+				/>
+			);
 
 		case Constants.PAGES.USER_MANAGEMENT:
-			return <UserProfile />;
-			break;
+			return (
+				<UserProfile
+					user_status={this.state.user_status}
+					status_message={this.state.status_message}
+					user_management_selector={this.state.user_management_selector}
+					user_management_username={this.state.user_management_username}
+					user_management_email={this.state.user_management_email}
+					user_management_password={this.state.user_management_password}
+					user_management_passwordconf={
+						this.state.user_management_passwordconf
+					}
+					onClick={this.handleClick}
+					onChange={this.handleChange}
+				/>
+			);
 
 		default:
 			break;
@@ -548,9 +677,7 @@ class App extends React.Component {
 					</h2>
 				</div>
 				<MainMenu
-					display_artefact_search={this.state.display_artefact_search}
-					display_exhibition_builder={this.state.display_exhibition_builder}
-					display_user_management={this.state.display_user_management}
+					display_page={this.state.display_page}
 					onClick={this.handleClick}
 				/>
 				{this.getPage()}

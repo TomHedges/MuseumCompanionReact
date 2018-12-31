@@ -22,6 +22,14 @@ export const PAGES = {
 	USER_MANAGEMENT: 'user_management'
 };
 
+export const USER_STATUS = {
+	REQUEST_PENDING: 'request_pending',
+	LOGGED_IN: 'logged_in',
+	LOGGED_OUT: 'logged_out',
+	LOGIN_FAILED: 'login_failed',
+	REGISTRATION_FAILED: 'registration_failed'
+};
+
 export const MESSAGE_NO_IMAGE = 'No image of this artefact is available';
 
 export const DATA_FIELDS = {
@@ -64,9 +72,21 @@ export const ARTEFACT_PREVIEW_IMAGE = 'artefact_preview_image';
 
 export const ARTEFACTS_BUTTON = 'artefacts_button';
 export const EXHIBITION_BUTTON = 'exhibition_button';
-export const USER_PROFILE_BUTTON = 'user_profile_button';
+export const USER_MANAGEMENT_BUTTON = 'user_management_button';
 export const PREVIOUS_BUTTON = 'previous_button';
 export const NEXT_BUTTON = 'next_button';
+export const REGISTER_BUTTON = 'register_button';
+export const LOGIN_BUTTON = 'login_button';
+export const LOGOUT_BUTTON = 'logout_button';
+
+export const INPUT_TEXT_USERNAME = 'input_text_username';
+export const INPUT_TEXT_PASSWORD = 'input_text_password';
+export const INPUT_TEXT_PASSWORDCONF = 'input_text_passwordconf';
+export const INPUT_TEXT_EMAIL = 'input_text_email';
+
+export const SELECTOR_LOGIN = 'selector_login';
+export const SELECTOR_REGISTER = 'selector_register';
+export const SELECTOR_NONE = 'selector_none';
 
 export const SEARCH_RESULTS_NUMBER_SELECT = 'search_results_number_select';
 export const NO_OF_RESULTS_TO_SHOW = {
