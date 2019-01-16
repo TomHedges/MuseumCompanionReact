@@ -27,7 +27,10 @@ export const USER_STATUS = {
 	LOGGED_IN: 'logged_in',
 	LOGGED_OUT: 'logged_out',
 	LOGIN_FAILED: 'login_failed',
-	REGISTRATION_FAILED: 'registration_failed'
+	REGISTRATION_FAILED: 'registration_failed',
+	EDITING_PROFILE: 'editing_profile',
+	PROFILE_UPDATE_MADE: 'editing_profile',
+	PROFILE_UPDATE_FAILED: 'editing_profile'
 };
 
 export const MESSAGE_NO_IMAGE = 'No image of this artefact is available';
@@ -78,11 +81,27 @@ export const NEXT_BUTTON = 'next_button';
 export const REGISTER_BUTTON = 'register_button';
 export const LOGIN_BUTTON = 'login_button';
 export const LOGOUT_BUTTON = 'logout_button';
+export const PROFILE_EDIT_BUTTON = 'profile_edit_button';
+export const PROFILE_EDIT_SAVE_BUTTON = 'profile_edit_save_button';
+export const PROFILE_EDIT_CANCEL_BUTTON = 'profile_edit_cancel_button';
+
+export const FORM_CONTENT = 'form_content';
 
 export const INPUT_TEXT_USERNAME = 'input_text_username';
+export const INPUT_TEXT_EMAIL = 'input_text_email';
+export const INPUT_TEXT_FIRST_NAME = 'input_text_first_name';
+export const INPUT_TEXT_SURNAME = 'input_text_surname';
 export const INPUT_TEXT_PASSWORD = 'input_text_password';
 export const INPUT_TEXT_PASSWORDCONF = 'input_text_passwordconf';
-export const INPUT_TEXT_EMAIL = 'input_text_email';
+
+export const INPUT_TEXT_NEW_USERNAME = 'input_text_new_username';
+export const INPUT_TEXT_NEW_EMAIL = 'input_text_new_email';
+export const INPUT_TEXT_NEW_FIRST_NAME = 'input_text_new_first_name';
+export const INPUT_TEXT_NEW_SURNAME = 'input_text_new_surname';
+export const INPUT_TEXT_NEW_PASSWORD = 'input_text_new_password';
+export const INPUT_TEXT_NEW_PASSWORDCONF = 'input_text_new_passwordconf';
+
+export const PASSWORD_UNCHANGED_PLACEHOLDER = '(Unchanged)';
 
 export const SELECTOR_LOGIN = 'selector_login';
 export const SELECTOR_REGISTER = 'selector_register';
@@ -99,11 +118,14 @@ export const NO_OF_RESULTS_TO_SHOW = {
 };
 export const DEFAULT_NO_OF_RESULTS_TO_SHOW = '50';
 
+export const DISPLAY_ = 'display_';
+
+export const DISPLAY_PAGE_WRAPPER = 'display_page_wrapper';
+
 export const DISPLAY_TAB_WRAPPER = 'display_tab_wrapper';
 export const DISPLAY_TAB_FILLER = 'display_tab_filler';
 export const DISPLAY_TAB = 'display_tab';
 export const DISPLAY_TAB_SELECTED = 'display_tab_selected';
-export const DISPLAY_ = 'display_';
 
 export const DISPLAY_SEARCH_CONTROLS = 'display_search_controls';
 export const DISPLAY_SEARCH_CONTROLS_GROUP = 'display_search_controls_group';
@@ -128,3 +150,9 @@ export const DISPLAY_ARTEFACT_DETAILS_HEADING =
 export const DISPLAY_ARTEFACT_DETAILS_SUBHEADING =
 	'display_artefact_details_subheading';
 export const DISPLAY_ARTEFACT_DETAILS_TEXT = 'display_artefact_details_text';
+
+export const DISPLAY_LINK_BUTTON_SMALL = 'display_link_button_small';
+export const DISPLAY_LINK_BUTTON_LARGE = 'display_link_button_large';
+export const DISPLAY_USER_STATAUS_GOOD = 'display_user_status_good_true';
+export const DISPLAY_INFORMATION_SYMBOL = 'display_information_symbol';
+export const DISPLAY_LOGGED_IN_MESSAGE = 'display_logged_in_message';

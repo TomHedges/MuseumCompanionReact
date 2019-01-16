@@ -8,8 +8,17 @@ class UserProfile extends React.Component {
 			user_management_selector: this.props.user_management_selector,
 			user_management_username: this.props.user_management_username,
 			user_management_email: this.props.user_management_email,
+			user_management_first_name: this.props.user_management_first_name,
+			user_management_surname: this.props.user_management_surname,
 			user_management_password: this.props.user_management_password,
-			user_management_passwordconf: this.props.user_management_passwordconf
+			user_management_passwordconf: this.props.user_management_passwordconf,
+			user_management_new_username: this.props.user_management_new_username,
+			user_management_new_email: this.props.user_management_new_email,
+			user_management_new_first_name: this.props.user_management_new_first_name,
+			user_management_new_surname: this.props.user_management_new_surname,
+			user_management_new_password: this.props.user_management_new_password,
+			user_management_new_passwordconf: this.props
+				.user_management_new_passwordconf
 		};
 		const user_message_is_positive =
 			this.props.user_status === Constants.USER_STATUS.LOGGED_IN ||
@@ -20,25 +29,39 @@ class UserProfile extends React.Component {
 		//<p>TEMP: LOGIN STATUS: {this.props.user_status}</p>
 		//<p>TEMP: INTERNAL DATA: {this.props.status_message}</p>
 		return (
-			<div>
+			<div className={Constants.DISPLAY_PAGE_WRAPPER}>
 				<h1>User Profile</h1>
+
 				<UserStatusMessage
 					user_status={this.props.user_status}
+					user_status_loading={this.props.user_status_loading}
 					user_message_is_positive={user_message_is_positive}
 					status_message={this.props.status_message}
 				/>
+
 				{this.props.user_status === Constants.USER_STATUS.LOGGED_IN ? (
 					<UserProfileContent
-						username={this.props.user_management_username}
 						onClick={this.props.onClick}
+						{...user_management_fields}
 					/>
-				) : (
-					<LoginAndRegistrationFieldsContent
+				) : null}
+
+				{this.props.user_status === Constants.USER_STATUS.EDITING_PROFILE ? (
+					<ProfileUpdate
 						onClick={this.props.onClick}
 						onChange={this.props.onChange}
 						{...user_management_fields}
 					/>
-				)}
+				) : null}
+
+				{this.props.user_status !== Constants.USER_STATUS.LOGGED_IN &&
+				this.props.user_status !== Constants.USER_STATUS.EDITING_PROFILE ? (
+						<LoginAndRegistrationFieldsContent
+							onClick={this.props.onClick}
+							onChange={this.props.onChange}
+							{...user_management_fields}
+						/>
+					) : null}
 			</div>
 		);
 	}
@@ -50,15 +73,18 @@ function UserStatusMessage(props) {
 		props.status_message === null ||
 		props.status_message === '' ||
 		props.user_status === null ||
-		props.user_status === Constants.USER_STATUS.REQUEST_PENDING
+		//props.user_status === Constants.USER_STATUS.REQUEST_PENDING ||
+		props.user_status === Constants.USER_STATUS.EDITING_PROFILE
 	) {
 		return null;
+	} else if (props.user_status_loading === true) {
+		return <p>LOADING</p>;
 	} else {
 		const message_class =
 			'display_user_status_good_' + props.user_message_is_positive;
 		return (
 			<p className={message_class}>
-				<span className="display_information_symbol">ⓘ</span>{' '}
+				<span className={Constants.DISPLAY_INFORMATION_SYMBOL}>ⓘ</span>{' '}
 				{props.status_message}
 			</p>
 		);
@@ -67,28 +93,50 @@ function UserStatusMessage(props) {
 
 function UserProfileContent(props) {
 	return (
-		<>
-			<h2>User Profile</h2>
-			<h3>Username: {props.username}</h3>
+		<div className={Constants.FORM_CONTENT}>
+			<p>
+				<span>Username:</span> {props.user_management_username}
+			</p>
+			<p>
+				<span>Email:</span> {props.user_management_email}
+			</p>
+			<p>
+				<span>First Name:</span> {props.user_management_first_name}
+			</p>
+			<p>
+				<span>Surname:</span> {props.user_management_surname}
+			</p>
+			<p>
+				<span>Password:</span> *********** (To change your password click "Edit
+				Profile")
+			</p>
 			<div>
 				<input
 					type="button"
+					className={Constants.DISPLAY_LINK_BUTTON_SMALL}
+					id={Constants.PROFILE_EDIT_BUTTON}
+					value="Edit Profile"
+					onClick={props.onClick}
+				/>
+				<input
+					type="button"
+					className={Constants.DISPLAY_LINK_BUTTON_SMALL}
 					id={Constants.LOGOUT_BUTTON}
 					value="Logout"
 					onClick={props.onClick}
 				/>
 			</div>
-		</>
+		</div>
 	);
 }
 
 function LoginAndRegistrationFieldsContent(props) {
 	return (
-		<>
+		<div className={Constants.FORM_CONTENT}>
 			<h2>
 				<input
 					type="button"
-					className="button_as_link"
+					className={Constants.DISPLAY_LINK_BUTTON_LARGE}
 					id={Constants.SELECTOR_LOGIN}
 					onClick={props.onClick}
 					value="Login"
@@ -96,7 +144,7 @@ function LoginAndRegistrationFieldsContent(props) {
 				or{' '}
 				<input
 					type="button"
-					className="button_as_link"
+					className={Constants.DISPLAY_LINK_BUTTON_LARGE}
 					id={Constants.SELECTOR_REGISTER}
 					onClick={props.onClick}
 					value="Register"
@@ -104,17 +152,37 @@ function LoginAndRegistrationFieldsContent(props) {
 			</h2>{' '}
 			{props.user_management_selector === Constants.SELECTOR_REGISTER ? (
 				<div>
-					<span>Username: </span>
-					<input
-						type="text"
-						id={Constants.INPUT_TEXT_USERNAME}
-						onChange={props.onChange}
-						value={props.user_management_username}
-					/>
+					<div>
+						<span>Username: </span>
+						<input
+							type="text"
+							id={Constants.INPUT_TEXT_USERNAME}
+							onChange={props.onChange}
+							value={props.user_management_username}
+						/>
+					</div>
+					<div>
+						<span>First Name: </span>
+						<input
+							type="text"
+							id={Constants.INPUT_TEXT_FIRST_NAME}
+							onChange={props.onChange}
+							value={props.user_management_first_name}
+						/>
+					</div>
+					<div>
+						<span>Surname: </span>
+						<input
+							type="text"
+							id={Constants.INPUT_TEXT_SURNAME}
+							onChange={props.onChange}
+							value={props.user_management_surname}
+						/>
+					</div>
 				</div>
 			) : null}
 			{props.user_management_selector !== Constants.SELECTOR_NONE ? (
-				<>
+				<div>
 					<div>
 						<span>Email Address: </span>
 						<input
@@ -133,7 +201,7 @@ function LoginAndRegistrationFieldsContent(props) {
 							value={props.user_management_password}
 						/>
 					</div>
-				</>
+				</div>
 			) : null}
 			{props.user_management_selector === Constants.SELECTOR_REGISTER ? (
 				<div>
@@ -159,7 +227,7 @@ function LoginAndRegistrationFieldsContent(props) {
 					onClick={props.onClick}
 				/>
 			) : null}
-		</>
+		</div>
 	);
 }
 
@@ -168,10 +236,92 @@ function LoginOrRegisterButton(props) {
 		<div>
 			<input
 				type="button"
+				className={Constants.DISPLAY_LINK_BUTTON_SMALL}
 				id={props.id}
 				value={props.value}
 				onClick={props.onClick}
 			/>
+		</div>
+	);
+}
+
+function ProfileUpdate(props) {
+	return (
+		<div className={Constants.FORM_CONTENT}>
+			<p>
+				<span>Username: </span>
+				<input
+					type="text"
+					id={Constants.INPUT_TEXT_NEW_USERNAME}
+					onChange={props.onChange}
+					value={props.user_management_new_username}
+				/>
+			</p>
+
+			<p>
+				<span>Email:</span>
+				<input
+					type="text"
+					id={Constants.INPUT_TEXT_NEW_EMAIL}
+					onChange={props.onChange}
+					value={props.user_management_new_email}
+				/>
+			</p>
+			<p>
+				<span>First Name:</span>
+				<input
+					type="text"
+					id={Constants.INPUT_TEXT_NEW_FIRST_NAME}
+					onChange={props.onChange}
+					value={props.user_management_new_first_name}
+				/>
+			</p>
+			<p>
+				<span>Surname:</span>
+				<input
+					type="text"
+					id={Constants.INPUT_TEXT_NEW_SURNAME}
+					onChange={props.onChange}
+					value={props.user_management_new_surname}
+				/>
+			</p>
+			<p>
+				<span>Password:</span>
+				<input
+					type="text"
+					id={Constants.INPUT_TEXT_NEW_PASSWORD}
+					onChange={props.onChange}
+					onClick={props.onClick}
+					value={props.user_management_new_password}
+				/>
+			</p>
+			<p>
+				<span>Confirm Password:</span>
+				<input
+					type="text"
+					id={Constants.INPUT_TEXT_NEW_PASSWORDCONF}
+					onChange={props.onChange}
+					onClick={props.onClick}
+					value={props.user_management_new_passwordconf}
+				/>
+			</p>
+
+			<div>
+				<input
+					type="button"
+					className={Constants.DISPLAY_LINK_BUTTON_SMALL}
+					id={Constants.PROFILE_EDIT_SAVE_BUTTON}
+					value="Save Changes"
+					onClick={props.onClick}
+				/>
+				<input
+					type="button"
+					className={Constants.DISPLAY_LINK_BUTTON_SMALL}
+					id={Constants.PROFILE_EDIT_CANCEL_BUTTON}
+					value="Cancel"
+					onClick={props.onClick}
+				/>
+			</div>
 		</div>
 	);
 }
@@ -186,6 +336,8 @@ UserProfile.propTypes = {
 	user_management_email: PropTypes.string.isRequired,
 	user_management_password: PropTypes.string.isRequired,
 	user_management_passwordconf: PropTypes.string.isRequired,
+	user_management_first_name: PropTypes.string.isRequired,
+	user_management_surname: PropTypes.string.isRequired,
 	onClick: PropTypes.func.isRequired,
 	onChange: PropTypes.func.isRequired
 };

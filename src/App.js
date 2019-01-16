@@ -32,14 +32,23 @@ class App extends React.Component {
 			artefactId: null,
 			display_page: Constants.PAGES.USER_MANAGEMENT,
 			user_status: Constants.USER_STATUS.LOGGED_OUT,
+			user_status_loading: false,
 			user_id: null,
-			username: null,
 			status_message: '',
 			user_management_selector: Constants.SELECTOR_NONE,
+			user_management_id: null,
 			user_management_username: '2ndGo',
 			user_management_email: 'bob@bob.com',
+			user_management_first_name: '',
+			user_management_surname: '',
 			user_management_password: 'test',
 			user_management_passwordconf: 'testy',
+			user_management_new_username: '',
+			user_management_new_email: '',
+			user_management_new_first_name: '',
+			user_management_new_surname: '',
+			user_management_new_password: '',
+			user_management_new_passwordconf: '',
 			singleArtefactDataRequestStatus: Constants.DATA_REQUEST_STATUS.NONE_MADE,
 			singleArtefactRawData: [],
 			singleArtefactProcessedData: [],
@@ -262,14 +271,48 @@ class App extends React.Component {
 			this.stateReset();
 			break;
 
+		case Constants.PROFILE_EDIT_BUTTON:
+			this.setState({
+				user_status: Constants.USER_STATUS.EDITING_PROFILE,
+				user_management_new_username: this.state.user_management_username,
+				user_management_new_email: this.state.user_management_email,
+				user_management_new_first_name: this.state.user_management_first_name,
+				user_management_new_surname: this.state.user_management_surname,
+				user_management_new_password: Constants.PASSWORD_UNCHANGED_PLACEHOLDER,
+				user_management_new_passwordconf: Constants.PASSWORD_UNCHANGED_PLACEHOLDER,
+			});
+			break;
+
+		case Constants.INPUT_TEXT_NEW_PASSWORD:
+			this.setState({
+				user_management_new_password: ''
+			});
+			break;
+
+		case Constants.INPUT_TEXT_NEW_PASSWORDCONF:
+			this.setState({
+				user_management_new_passwordconf: ''
+			});
+			break;
+
+		case Constants.PROFILE_EDIT_CANCEL_BUTTON:
+			this.setState({
+				user_status: Constants.USER_STATUS.LOGGED_IN,
+				status_message: ''
+			});
+			break;
+
 		case Constants.REGISTER_BUTTON:
 			this.setState(
 				{
-					user_status: Constants.USER_STATUS.REQUEST_PENDING
+					//user_status: Constants.USER_STATUS.REQUEST_PENDING
+					user_status_loading: true
 				},
 				() => {
 					LocalDataAccess.register_new_user(
 						this.state.user_management_username,
+						this.state.user_management_first_name,
+						this.state.user_management_surname,
 						this.state.user_management_email,
 						this.state.user_management_password,
 						this.state.user_management_passwordconf
@@ -277,28 +320,82 @@ class App extends React.Component {
 						if (
 							returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS
 						) {
+							console.log(returned_data.user_data);
 							this.setState({
 								user_status: Constants.USER_STATUS.LOGGED_IN,
-								status_message: returned_data.internal_data
+								user_status_loading: false,
+								status_message: returned_data.internal_data,
+								user_management_id: returned_data.user_data._id,
+								user_management_username: returned_data.user_data.username,
+								user_management_first_name:
+										returned_data.user_data.first_name,
+								user_management_surname: returned_data.user_data.surname
 							});
 						} else {
 							//console.log('login error');
 							//return 'login error';
 							this.setState({
 								user_status: Constants.USER_STATUS.LOGIN_FAILED,
+								user_status_loading: false,
 								status_message: returned_data.internal_data
 							});
 						}
 					});
 				}
 			);
+			break;
 
+		case Constants.PROFILE_EDIT_SAVE_BUTTON:
+			this.setState(
+				{
+					//user_status: Constants.USER_STATUS.REQUEST_PENDING
+					user_status_loading: true
+				},
+				() => {
+					const user_data = {
+						id: this.state.user_management_id,
+						username: this.state.user_management_new_username,
+						email: this.state.user_management_new_email,
+						first_name: this.state.user_management_new_first_name,
+						surname: this.state.user_management_new_surname,
+						password: this.state.user_management_new_password,
+						passwordconf: this.state.user_management_new_passwordconf,
+					};
+					LocalDataAccess.update_user_profile(user_data).then(
+						returned_data => {
+							if (
+								returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS
+							) {
+								//console.log(returned_data.user_data);
+								this.setState({
+									user_status: Constants.USER_STATUS.LOGGED_IN,
+									user_status_loading: false,
+									status_message: returned_data.internal_data,
+									user_management_username: returned_data.user_data.username,
+									user_management_email: returned_data.user_data.email,
+									user_management_first_name: returned_data.user_data.first_name,
+									user_management_surname: returned_data.user_data.surname,
+								});
+							} else {
+								//console.log('login error');
+								//return 'login error';
+								this.setState({
+									user_status: Constants.USER_STATUS.LOGIN_FAILED,
+									user_status_loading: false,
+									status_message: returned_data.internal_data
+								});
+							}
+						}
+					);
+				}
+			);
 			break;
 
 		case Constants.LOGIN_BUTTON:
 			this.setState(
 				{
-					user_status: Constants.USER_STATUS.REQUEST_PENDING
+					//user_status: Constants.USER_STATUS.REQUEST_PENDING
+					user_status_loading: true
 				},
 				() => {
 					LocalDataAccess.login(
@@ -308,15 +405,23 @@ class App extends React.Component {
 						if (
 							returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS
 						) {
+							console.log(returned_data.user_data);
 							this.setState({
 								user_status: Constants.USER_STATUS.LOGGED_IN,
-								status_message: returned_data.internal_data
+								user_status_loading: false,
+								status_message: returned_data.internal_data,
+								user_management_id: returned_data.user_data._id,
+								user_management_username: returned_data.user_data.username,
+								user_management_first_name:
+										returned_data.user_data.first_name,
+								user_management_surname: returned_data.user_data.surname
 							});
 						} else {
 							//console.log('login error');
 							//return 'login error';
 							this.setState({
 								user_status: Constants.USER_STATUS.LOGIN_FAILED,
+								user_status_loading: false,
 								status_message: returned_data.internal_data
 							});
 						}
@@ -328,7 +433,8 @@ class App extends React.Component {
 		case Constants.LOGOUT_BUTTON:
 			this.setState(
 				{
-					user_status: Constants.USER_STATUS.REQUEST_PENDING
+					//user_status: Constants.USER_STATUS.REQUEST_PENDING
+					user_status_loading: true
 				},
 				() => {
 					LocalDataAccess.logout().then(returned_data => {
@@ -337,7 +443,15 @@ class App extends React.Component {
 						) {
 							this.setState({
 								user_status: Constants.USER_STATUS.LOGGED_OUT,
-								status_message: returned_data.internal_data
+								user_status_loading: false,
+								status_message: returned_data.internal_data,
+								user_management_id: '',
+								user_management_email: '',
+								user_management_username: '',
+								user_management_first_name: '',
+								user_management_surname: '',
+								user_management_password: '',
+								user_management_passwordconf: ''
 							});
 						} else {
 							console.log('logout error');
@@ -511,6 +625,18 @@ class App extends React.Component {
 			});
 			break;
 
+		case Constants.INPUT_TEXT_FIRST_NAME:
+			this.setState({
+				user_management_first_name: event.target.value
+			});
+			break;
+
+		case Constants.INPUT_TEXT_SURNAME:
+			this.setState({
+				user_management_surname: event.target.value
+			});
+			break;
+
 		case Constants.INPUT_TEXT_EMAIL:
 			this.setState({
 				user_management_email: event.target.value
@@ -526,6 +652,68 @@ class App extends React.Component {
 		case Constants.INPUT_TEXT_PASSWORDCONF:
 			this.setState({
 				user_management_passwordconf: event.target.value
+			});
+			break;
+
+		case Constants.INPUT_TEXT_NEW_USERNAME:
+			this.setState({
+				user_management_new_username: event.target.value
+			});
+			break;
+
+		case Constants.INPUT_TEXT_NEW_EMAIL:
+			this.setState({
+				user_management_new_email: event.target.value
+			});
+			break;
+
+		case Constants.INPUT_TEXT_NEW_FIRST_NAME:
+			this.setState({
+				user_management_new_first_name: event.target.value
+			});
+			break;
+
+		case Constants.INPUT_TEXT_NEW_SURNAME:
+			this.setState({
+				user_management_new_surname: event.target.value
+			});
+			break;
+
+		case Constants.INPUT_TEXT_NEW_PASSWORD:
+			var tempNewPassword = '';
+			if (event.target.value === '') {
+				tempNewPassword = Constants.PASSWORD_UNCHANGED_PLACEHOLDER;
+			} else if (event.target.value === Constants.PASSWORD_UNCHANGED_PLACEHOLDER.substring(0,event.target.value.length)) {
+				tempNewPassword = '';
+			} else if (event.target.value.substring(0,Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length) === Constants.PASSWORD_UNCHANGED_PLACEHOLDER) {
+				tempNewPassword = event.target.value.substring(Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length);
+			} else {
+				tempNewPassword = event.target.value;
+			}
+			this.setState({
+				user_management_new_password: tempNewPassword
+			});
+			break;
+
+		case Constants.INPUT_TEXT_NEW_PASSWORDCONF:
+			var tempNewPasswordConf = '';
+			if (event.target.value === '') {
+				tempNewPasswordConf = Constants.PASSWORD_UNCHANGED_PLACEHOLDER;
+			} else if (event.target.value === Constants.PASSWORD_UNCHANGED_PLACEHOLDER.substring(0,event.target.value.length)) {
+				tempNewPasswordConf = '';
+			} else if (event.target.value.substring(0,Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length) === Constants.PASSWORD_UNCHANGED_PLACEHOLDER) {
+				tempNewPasswordConf = event.target.value.substring(Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length);
+			} else {
+				tempNewPasswordConf = event.target.value;
+			}
+			this.setState({
+				user_management_new_passwordconf: tempNewPasswordConf
+			});
+			break;
+
+		case Constants.INPUT_TEXT_NEW_PASSWORDCONF:
+			this.setState({
+				user_management_new_passwordconf: event.target.value
 			});
 			break;
 
@@ -649,14 +837,25 @@ class App extends React.Component {
 			return (
 				<UserProfile
 					user_status={this.state.user_status}
+					user_status_loading={this.state.user_status_loading}
 					status_message={this.state.status_message}
 					user_management_selector={this.state.user_management_selector}
 					user_management_username={this.state.user_management_username}
 					user_management_email={this.state.user_management_email}
+					user_management_first_name={this.state.user_management_first_name}
+					user_management_surname={this.state.user_management_surname}
 					user_management_password={this.state.user_management_password}
 					user_management_passwordconf={
 						this.state.user_management_passwordconf
 					}
+					user_management_new_username={this.state.user_management_new_username}
+					user_management_new_email={this.state.user_management_new_email}
+					user_management_new_first_name={this.state.user_management_new_first_name}
+					user_management_new_surname={this.state.user_management_new_surname}
+					user_management_new_password={this.state.user_management_new_password}
+					user_management_new_passwordconf={
+						this.state.user_management_new_passwordconf
+					}					
 					onClick={this.handleClick}
 					onChange={this.handleChange}
 				/>
@@ -675,6 +874,11 @@ class App extends React.Component {
 						<img src={logo} className="App-logo" alt="logo" />
 						Museum Companion
 					</h2>
+					<UserSlug
+						user_status={this.state.user_status}
+						username={this.state.user_management_username}
+						onClick={this.handleClick}
+					/>
 				</div>
 				<MainMenu
 					display_page={this.state.display_page}
@@ -683,6 +887,30 @@ class App extends React.Component {
 				{this.getPage()}
 			</div>
 		);
+	}
+}
+
+function UserSlug(props) {
+	if (
+		props.user_status === Constants.USER_STATUS.LOGGED_IN ||
+		props.user_status === Constants.USER_STATUS.EDITING_PROFILE
+	) {
+		return (
+			<div className={Constants.DISPLAY_LOGGED_IN_MESSAGE}>
+				<p>
+					Signed in as '{props.username}' &nbsp;&nbsp;
+					<input
+						type="button"
+						id={Constants.LOGOUT_BUTTON}
+						className={Constants.DISPLAY_LINK_BUTTON_SMALL}
+						onClick={props.onClick}
+						value="Logout"
+					/>
+				</p>
+			</div>
+		);
+	} else {
+		return null;
 	}
 }
 

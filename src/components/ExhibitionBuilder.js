@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 class ExhibitionBuilder extends React.Component {
 	render() {
 		return (
-			<div>
+			<div className={Constants.DISPLAY_PAGE_WRAPPER}>
 				<h1>Exhibition Builder</h1>
 				<p>To be implemented...</p>
 				<p>Payload: {JSON.stringify(this.props.internal_data)}</p>

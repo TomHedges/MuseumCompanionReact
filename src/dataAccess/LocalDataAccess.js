@@ -22,6 +22,7 @@ export async function login(user_management_email, user_management_password) {
 				data.result = Constants.DATA_REQUEST_STATUS.SUCCESS;
 				data.user_status = Constants.USER_STATUS.LOGGED_IN;
 				data.internal_data = res.body;
+				data.user_data = res.user_data;
 			} else {
 				data.result = Constants.DATA_REQUEST_STATUS.FAILURE;
 				data.user_status = Constants.USER_STATUS.LOGIN_FAILED;
@@ -63,6 +64,8 @@ export async function logout() {
 
 export async function register_new_user(
 	user_management_username,
+	user_management_first_name,
+	user_management_surname,
 	user_management_email,
 	user_management_password,
 	user_management_passwordconf
@@ -70,6 +73,8 @@ export async function register_new_user(
 	var data = {
 		email: user_management_email,
 		username: user_management_username,
+		first_name: user_management_first_name,
+		surname: user_management_surname,
 		password: user_management_password,
 		passwordConf: user_management_passwordconf
 	};
@@ -93,9 +98,52 @@ export async function register_new_user(
 				data.result = Constants.DATA_REQUEST_STATUS.SUCCESS;
 				data.user_status = Constants.USER_STATUS.LOGGED_IN;
 				data.internal_data = res.body;
+				data.user_data = res.user_data;
 			} else {
 				data.result = Constants.DATA_REQUEST_STATUS.FAILURE;
 				data.user_status = Constants.USER_STATUS.REGISTRATION_FAILED;
+				data.internal_data = res.error;
+			}
+			//internal_data: JSON.stringify(res.body)
+			return data;
+		});
+	return returnData;
+}
+
+export async function update_user_profile(user_data) {
+	var data = {
+		id: user_data.id,
+		username: user_data.username,
+		email: user_data.email,
+		first_name: user_data.first_name,
+		surname: user_data.surname
+	};
+	//console.log(data);
+	const returnData = await fetch('/api/updateProfile', {
+		method: 'POST', // or 'PUT'
+		body: JSON.stringify(data), // data can be `string` or {object}!
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	})
+		.then(data => data.json())
+		.then(res => {
+			//console.log(JSON.stringify(res));
+			//return {
+			//	result: Constants.DATA_REQUEST_STATUS.SUCCESS,
+			//	internal_data: JSON.stringify(res.body)
+			//};
+			console.log('Update successful?: ' + res.success);
+			//console.log('Returned user_data.username: ' + res.user_data.username);
+			var data = {};
+			if (res.success) {
+				data.result = Constants.DATA_REQUEST_STATUS.SUCCESS;
+				data.user_status = Constants.USER_STATUS.PROFILE_UPDATE_MADE;
+				data.internal_data = res.body;
+				data.user_data = res.user_data;
+			} else {
+				data.result = Constants.DATA_REQUEST_STATUS.FAILURE;
+				data.user_status = Constants.USER_STATUS.PROFILE_UPDATE_FAILED;
 				data.internal_data = res.error;
 			}
 			//internal_data: JSON.stringify(res.body)
