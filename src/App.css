@@ -52,7 +52,7 @@ input {
 .display_logged_in_message {
   color: #9fd9ff;
   position: absolute;
-  top: 50px;
+  top: 64px;
   right: 0;
   margin: 0px;
 }
@@ -61,8 +61,8 @@ input {
   .display_logged_in_message {
     color: #9fd9ff;
     position: relative;
-    top: -29px;
-    right: -140px;
+    top: -31px;
+    right: -150px;
     margin: 0px;
     padding: 0;
     text-align: right;

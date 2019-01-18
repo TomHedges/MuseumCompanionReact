@@ -29,8 +29,8 @@ export const USER_STATUS = {
 	LOGIN_FAILED: 'login_failed',
 	REGISTRATION_FAILED: 'registration_failed',
 	EDITING_PROFILE: 'editing_profile',
-	PROFILE_UPDATE_MADE: 'editing_profile',
-	PROFILE_UPDATE_FAILED: 'editing_profile'
+	PROFILE_UPDATE_MADE: 'profile_update_made',
+	PROFILE_UPDATE_FAILED: 'profile_update_failed'
 };
 
 export const MESSAGE_NO_IMAGE = 'No image of this artefact is available';

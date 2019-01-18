@@ -39,12 +39,14 @@ class UserProfile extends React.Component {
 					status_message={this.props.status_message}
 				/>
 
-				{this.props.user_status === Constants.USER_STATUS.LOGGED_IN ? (
-					<UserProfileContent
-						onClick={this.props.onClick}
-						{...user_management_fields}
-					/>
-				) : null}
+				{this.props.user_status === Constants.USER_STATUS.LOGGED_IN ||
+				this.props.user_status ===
+					Constants.USER_STATUS.PROFILE_UPDATE_FAILED ? (
+						<UserProfileContent
+							onClick={this.props.onClick}
+							{...user_management_fields}
+						/>
+					) : null}
 
 				{this.props.user_status === Constants.USER_STATUS.EDITING_PROFILE ? (
 					<ProfileUpdate
@@ -55,7 +57,9 @@ class UserProfile extends React.Component {
 				) : null}
 
 				{this.props.user_status !== Constants.USER_STATUS.LOGGED_IN &&
-				this.props.user_status !== Constants.USER_STATUS.EDITING_PROFILE ? (
+				this.props.user_status !== Constants.USER_STATUS.EDITING_PROFILE &&
+				this.props.user_status !==
+					Constants.USER_STATUS.PROFILE_UPDATE_FAILED ? (
 						<LoginAndRegistrationFieldsContent
 							onClick={this.props.onClick}
 							onChange={this.props.onChange}

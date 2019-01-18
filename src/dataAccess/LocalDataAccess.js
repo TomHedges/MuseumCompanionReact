@@ -116,7 +116,9 @@ export async function update_user_profile(user_data) {
 		username: user_data.username,
 		email: user_data.email,
 		first_name: user_data.first_name,
-		surname: user_data.surname
+		surname: user_data.surname,
+		password: user_data.password,
+		passwordconf: user_data.passwordconf
 	};
 	//console.log(data);
 	const returnData = await fetch('/api/updateProfile', {

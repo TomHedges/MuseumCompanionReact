@@ -375,12 +375,14 @@ class App extends React.Component {
 									user_management_email: returned_data.user_data.email,
 									user_management_first_name: returned_data.user_data.first_name,
 									user_management_surname: returned_data.user_data.surname,
+									user_management_password: returned_data.user_data.password,
+									user_management_passwordconf: returned_data.user_data.passwordConf,
 								});
 							} else {
 								//console.log('login error');
 								//return 'login error';
 								this.setState({
-									user_status: Constants.USER_STATUS.LOGIN_FAILED,
+									user_status: Constants.USER_STATUS.PROFILE_UPDATE_FAILED,
 									user_status_loading: false,
 									status_message: returned_data.internal_data
 								});
@@ -392,42 +394,53 @@ class App extends React.Component {
 			break;
 
 		case Constants.LOGIN_BUTTON:
-			this.setState(
-				{
+			if (this.state.user_management_email === null || this.state.user_management_email.length === 0 ||
+				this.state.user_management_password === null || this.state.user_management_password.length === 0 ) {
+				this.setState(
+					{
+						user_status: Constants.USER_STATUS.LOGIN_FAILED,
+						user_status_loading: false,
+						status_message: 'Please enter a username and password'
+					}
+				);
+			} else {
+				this.setState(
+					{
 					//user_status: Constants.USER_STATUS.REQUEST_PENDING
-					user_status_loading: true
-				},
-				() => {
-					LocalDataAccess.login(
-						this.state.user_management_email,
-						this.state.user_management_password
-					).then(returned_data => {
-						if (
-							returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS
-						) {
-							console.log(returned_data.user_data);
-							this.setState({
-								user_status: Constants.USER_STATUS.LOGGED_IN,
-								user_status_loading: false,
-								status_message: returned_data.internal_data,
-								user_management_id: returned_data.user_data._id,
-								user_management_username: returned_data.user_data.username,
-								user_management_first_name:
+						user_status_loading: true
+					},
+					() => {
+						LocalDataAccess.login(
+							this.state.user_management_email,
+							this.state.user_management_password
+						).then(returned_data => {
+							if (
+								returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS
+							) {
+								console.log(returned_data.user_data);
+								this.setState({
+									user_status: Constants.USER_STATUS.LOGGED_IN,
+									user_status_loading: false,
+									status_message: returned_data.internal_data,
+									user_management_id: returned_data.user_data._id,
+									user_management_username: returned_data.user_data.username,
+									user_management_first_name:
 										returned_data.user_data.first_name,
-								user_management_surname: returned_data.user_data.surname
-							});
-						} else {
+									user_management_surname: returned_data.user_data.surname
+								});
+							} else {
 							//console.log('login error');
 							//return 'login error';
-							this.setState({
-								user_status: Constants.USER_STATUS.LOGIN_FAILED,
-								user_status_loading: false,
-								status_message: returned_data.internal_data
-							});
-						}
-					});
-				}
-			);
+								this.setState({
+									user_status: Constants.USER_STATUS.LOGIN_FAILED,
+									user_status_loading: false,
+									status_message: returned_data.internal_data
+								});
+							}
+						});
+					}
+				);
+			}
 			break;
 
 		case Constants.LOGOUT_BUTTON:
@@ -708,12 +721,6 @@ class App extends React.Component {
 			}
 			this.setState({
 				user_management_new_passwordconf: tempNewPasswordConf
-			});
-			break;
-
-		case Constants.INPUT_TEXT_NEW_PASSWORDCONF:
-			this.setState({
-				user_management_new_passwordconf: event.target.value
 			});
 			break;
 
