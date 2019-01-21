@@ -4,7 +4,7 @@ import SearchControls from './components/SearchControls.js';
 import SearchResults from './components/SearchResults.js';
 import ArtefactDetails from './components/ArtefactDetails.js';
 import MainMenu from './components/MainMenu.js';
-import ExhibitionBuilder from './components/ExhibitionBuilder.js';
+import ExhibitionBrowser from './components/ExhibitionBrowser.js';
 import UserProfile from './components/UserProfile.js';
 import remoteDataAccess from './dataAccess/RemoteDataAccess.js';
 import * as LocalDataAccess from './dataAccess/LocalDataAccess.js';
@@ -561,7 +561,7 @@ class App extends React.Component {
 
 		case Constants.EXHIBITION_BUTTON:
 			this.setState({
-				display_page: Constants.PAGES.EXHIBITION_BUILDER,
+				display_page: Constants.PAGES.EXHIBITION_BROWSER,
 				status_message: ''
 			});
 			break;
@@ -887,9 +887,9 @@ class App extends React.Component {
 					</>
 			);
 
-		case Constants.PAGES.EXHIBITION_BUILDER:
+		case Constants.PAGES.EXHIBITION_BROWSER:
 			return (
-				<ExhibitionBuilder
+				<ExhibitionBrowser
 					status_message={this.state.status_message}
 					artefact_all_collections={this.state.artefact_all_collections}
 					onClick={this.handleClick}

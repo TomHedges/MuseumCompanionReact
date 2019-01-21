@@ -18,7 +18,7 @@ export const DEFAULT_SOURCE = 'V_AND_A';
 
 export const PAGES = {
 	ARTEFACT_SEARCH: 'artefact_search',
-	EXHIBITION_BUILDER: 'exhibition_builder',
+	EXHIBITION_BROWSER: 'exhibition_browser',
 	USER_MANAGEMENT: 'user_management'
 };
 

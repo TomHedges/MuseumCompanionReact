@@ -2,11 +2,11 @@ import React from 'react';
 import * as Constants from '../constants/Constants.js';
 import PropTypes from 'prop-types';
 
-class ExhibitionBuilder extends React.Component {
+class ExhibitionBrowser extends React.Component {
 	render() {
 		return (
 			<div className={Constants.DISPLAY_PAGE_WRAPPER}>
-				<h1>Exhibition Builder</h1>
+				<h1>Exhibition Browser</h1>
 				<p>To be implemented...</p>
 				<p>Payload: {JSON.stringify(this.props.internal_data)}</p>
 				<p
@@ -57,8 +57,8 @@ function TableRow(props) {
 	);
 }
 
-export default ExhibitionBuilder;
+export default ExhibitionBrowser;
 
-ExhibitionBuilder.propTypes = {
+ExhibitionBrowser.propTypes = {
 	onClick: PropTypes.func.isRequired
 };

@@ -9,19 +9,31 @@ class MainMenu extends React.Component {
 				<MenuTab
 					id={Constants.ARTEFACTS_BUTTON}
 					label="Artefact Search"
-					selected={this.props.display_page === Constants.PAGES.ARTEFACT_SEARCH ? true : false}
+					selected={
+						this.props.display_page === Constants.PAGES.ARTEFACT_SEARCH
+							? true
+							: false
+					}
 					onClick={this.props.onClick}
 				/>
 				<MenuTab
 					id={Constants.EXHIBITION_BUTTON}
-					label="Exhibition Builder"
-					selected={this.props.display_page === Constants.PAGES.EXHIBITION_BUILDER ? true : false}
+					label="Exhibition Browser"
+					selected={
+						this.props.display_page === Constants.PAGES.EXHIBITION_BROWSER
+							? true
+							: false
+					}
 					onClick={this.props.onClick}
 				/>
 				<MenuTab
 					id={Constants.USER_MANAGEMENT_BUTTON}
 					label="User Profile"
-					selected={this.props.display_page === Constants.PAGES.USER_MANAGEMENT ? true : false}
+					selected={
+						this.props.display_page === Constants.PAGES.USER_MANAGEMENT
+							? true
+							: false
+					}
 					onClick={this.props.onClick}
 				/>
 				<div className={Constants.DISPLAY_TAB_FILLER} />
