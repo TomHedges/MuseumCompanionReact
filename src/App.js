@@ -59,7 +59,8 @@ class App extends React.Component {
 			searchResultsProcessedData: [],
 			searchResultsErrorMessage: null,
 			searchResultsBackgroundDataRequestStatus:
-				Constants.DATA_REQUEST_STATUS.NONE_MADE
+				Constants.DATA_REQUEST_STATUS.NONE_MADE,
+			artefact_all_collections: []
 		};
 
 		this.handleClick = this.handleClick.bind(this);
@@ -278,8 +279,10 @@ class App extends React.Component {
 				user_management_new_email: this.state.user_management_email,
 				user_management_new_first_name: this.state.user_management_first_name,
 				user_management_new_surname: this.state.user_management_surname,
-				user_management_new_password: Constants.PASSWORD_UNCHANGED_PLACEHOLDER,
-				user_management_new_passwordconf: Constants.PASSWORD_UNCHANGED_PLACEHOLDER,
+				user_management_new_password:
+						Constants.PASSWORD_UNCHANGED_PLACEHOLDER,
+				user_management_new_passwordconf:
+						Constants.PASSWORD_UNCHANGED_PLACEHOLDER
 			});
 			break;
 
@@ -359,7 +362,7 @@ class App extends React.Component {
 						first_name: this.state.user_management_new_first_name,
 						surname: this.state.user_management_new_surname,
 						password: this.state.user_management_new_password,
-						passwordconf: this.state.user_management_new_passwordconf,
+						passwordconf: this.state.user_management_new_passwordconf
 					};
 					LocalDataAccess.update_user_profile(user_data).then(
 						returned_data => {
@@ -373,10 +376,12 @@ class App extends React.Component {
 									status_message: returned_data.internal_data,
 									user_management_username: returned_data.user_data.username,
 									user_management_email: returned_data.user_data.email,
-									user_management_first_name: returned_data.user_data.first_name,
+									user_management_first_name:
+											returned_data.user_data.first_name,
 									user_management_surname: returned_data.user_data.surname,
 									user_management_password: returned_data.user_data.password,
-									user_management_passwordconf: returned_data.user_data.passwordConf,
+									user_management_passwordconf:
+											returned_data.user_data.passwordConf
 								});
 							} else {
 								//console.log('login error');
@@ -394,19 +399,21 @@ class App extends React.Component {
 			break;
 
 		case Constants.LOGIN_BUTTON:
-			if (this.state.user_management_email === null || this.state.user_management_email.length === 0 ||
-				this.state.user_management_password === null || this.state.user_management_password.length === 0 ) {
-				this.setState(
-					{
-						user_status: Constants.USER_STATUS.LOGIN_FAILED,
-						user_status_loading: false,
-						status_message: 'Please enter a username and password'
-					}
-				);
+			if (
+				this.state.user_management_email === null ||
+					this.state.user_management_email.length === 0 ||
+					this.state.user_management_password === null ||
+					this.state.user_management_password.length === 0
+			) {
+				this.setState({
+					user_status: Constants.USER_STATUS.LOGIN_FAILED,
+					user_status_loading: false,
+					status_message: 'Please enter a username and password'
+				});
 			} else {
 				this.setState(
 					{
-					//user_status: Constants.USER_STATUS.REQUEST_PENDING
+						//user_status: Constants.USER_STATUS.REQUEST_PENDING
 						user_status_loading: true
 					},
 					() => {
@@ -425,12 +432,12 @@ class App extends React.Component {
 									user_management_id: returned_data.user_data._id,
 									user_management_username: returned_data.user_data.username,
 									user_management_first_name:
-										returned_data.user_data.first_name,
+											returned_data.user_data.first_name,
 									user_management_surname: returned_data.user_data.surname
 								});
 							} else {
-							//console.log('login error');
-							//return 'login error';
+								//console.log('login error');
+								//return 'login error';
 								this.setState({
 									user_status: Constants.USER_STATUS.LOGIN_FAILED,
 									user_status_loading: false,
@@ -613,6 +620,30 @@ class App extends React.Component {
 			});
 			break;
 
+		case Constants.EXHIBITION_FIND_ALL_BUTTON:
+			console.log('test_firing...');
+			this.setState(
+				{
+					//user_status: Constants.USER_STATUS.REQUEST_PENDING
+					user_status_loading: true
+				},
+				() => {
+					LocalDataAccess.find_all_exhibitions().then(returned_data => {
+						if (
+							returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS
+						) {
+							this.setState({
+								artefact_all_collections: returned_data.exhibitions_data
+							});
+						} else {
+							console.log('artefact collection error');
+							return 'artefact collection error';
+						}
+					});
+				}
+			);
+			break;
+
 		default:
 			break;
 		}
@@ -696,10 +727,23 @@ class App extends React.Component {
 			var tempNewPassword = '';
 			if (event.target.value === '') {
 				tempNewPassword = Constants.PASSWORD_UNCHANGED_PLACEHOLDER;
-			} else if (event.target.value === Constants.PASSWORD_UNCHANGED_PLACEHOLDER.substring(0,event.target.value.length)) {
+			} else if (
+				event.target.value ===
+					Constants.PASSWORD_UNCHANGED_PLACEHOLDER.substring(
+						0,
+						event.target.value.length
+					)
+			) {
 				tempNewPassword = '';
-			} else if (event.target.value.substring(0,Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length) === Constants.PASSWORD_UNCHANGED_PLACEHOLDER) {
-				tempNewPassword = event.target.value.substring(Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length);
+			} else if (
+				event.target.value.substring(
+					0,
+					Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length
+				) === Constants.PASSWORD_UNCHANGED_PLACEHOLDER
+			) {
+				tempNewPassword = event.target.value.substring(
+					Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length
+				);
 			} else {
 				tempNewPassword = event.target.value;
 			}
@@ -712,10 +756,23 @@ class App extends React.Component {
 			var tempNewPasswordConf = '';
 			if (event.target.value === '') {
 				tempNewPasswordConf = Constants.PASSWORD_UNCHANGED_PLACEHOLDER;
-			} else if (event.target.value === Constants.PASSWORD_UNCHANGED_PLACEHOLDER.substring(0,event.target.value.length)) {
+			} else if (
+				event.target.value ===
+					Constants.PASSWORD_UNCHANGED_PLACEHOLDER.substring(
+						0,
+						event.target.value.length
+					)
+			) {
 				tempNewPasswordConf = '';
-			} else if (event.target.value.substring(0,Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length) === Constants.PASSWORD_UNCHANGED_PLACEHOLDER) {
-				tempNewPasswordConf = event.target.value.substring(Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length);
+			} else if (
+				event.target.value.substring(
+					0,
+					Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length
+				) === Constants.PASSWORD_UNCHANGED_PLACEHOLDER
+			) {
+				tempNewPasswordConf = event.target.value.substring(
+					Constants.PASSWORD_UNCHANGED_PLACEHOLDER.length
+				);
 			} else {
 				tempNewPasswordConf = event.target.value;
 			}
@@ -833,9 +890,8 @@ class App extends React.Component {
 		case Constants.PAGES.EXHIBITION_BUILDER:
 			return (
 				<ExhibitionBuilder
-					user_status={this.state.user_status}
-					user_id={this.state.user_id}
 					status_message={this.state.status_message}
+					artefact_all_collections={this.state.artefact_all_collections}
 					onClick={this.handleClick}
 				/>
 			);
@@ -855,14 +911,20 @@ class App extends React.Component {
 					user_management_passwordconf={
 						this.state.user_management_passwordconf
 					}
-					user_management_new_username={this.state.user_management_new_username}
+					user_management_new_username={
+						this.state.user_management_new_username
+					}
 					user_management_new_email={this.state.user_management_new_email}
-					user_management_new_first_name={this.state.user_management_new_first_name}
+					user_management_new_first_name={
+						this.state.user_management_new_first_name
+					}
 					user_management_new_surname={this.state.user_management_new_surname}
-					user_management_new_password={this.state.user_management_new_password}
+					user_management_new_password={
+						this.state.user_management_new_password
+					}
 					user_management_new_passwordconf={
 						this.state.user_management_new_passwordconf
-					}					
+					}
 					onClick={this.handleClick}
 					onChange={this.handleChange}
 				/>

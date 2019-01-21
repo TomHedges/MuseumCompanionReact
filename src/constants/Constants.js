@@ -85,6 +85,8 @@ export const PROFILE_EDIT_BUTTON = 'profile_edit_button';
 export const PROFILE_EDIT_SAVE_BUTTON = 'profile_edit_save_button';
 export const PROFILE_EDIT_CANCEL_BUTTON = 'profile_edit_cancel_button';
 
+export const EXHIBITION_FIND_ALL_BUTTON = 'exhibition_find_all_button';
+
 export const FORM_CONTENT = 'form_content';
 
 export const INPUT_TEXT_USERNAME = 'input_text_username';

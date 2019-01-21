@@ -153,3 +153,19 @@ export async function update_user_profile(user_data) {
 		});
 	return returnData;
 }
+
+export async function find_all_exhibitions() {
+	const returnData = await fetch('/api/exhibitions')
+		.then(data => data.json())
+		.then(res => {
+			console.log(
+				'Collected ' + res.exhibitions_data.length + ' exhibitions...'
+			);
+			return {
+				result: Constants.DATA_REQUEST_STATUS.SUCCESS,
+				exhibitions_data: res.exhibitions_data,
+				internal_data: res.body
+			};
+		});
+	return returnData;
+}
