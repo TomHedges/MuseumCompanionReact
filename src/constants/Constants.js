@@ -73,6 +73,9 @@ export const SEARCH_RESULT_NAME = 'search_result_name';
 export const SEARCH_PREVIEW_IMAGE = 'search_preview_image';
 export const ARTEFACT_PREVIEW_IMAGE = 'artefact_preview_image';
 
+export const EXHIBITION_LIST_CELL = 'exhibition_list_cell';
+export const EXHIBITION_CONTENTS_CELL = 'exhibition_contents_cell';
+
 export const ARTEFACTS_BUTTON = 'artefacts_button';
 export const EXHIBITION_BUTTON = 'exhibition_button';
 export const USER_MANAGEMENT_BUTTON = 'user_management_button';

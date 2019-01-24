@@ -30,7 +30,7 @@ class App extends React.Component {
 			searchResultRequestLimit: Constants.DATA_RESULTS_DOWNLOAD_LIMIT,
 			searchText: '',
 			artefactId: null,
-			display_page: Constants.PAGES.USER_MANAGEMENT,
+			display_page: Constants.PAGES.EXHIBITION_BROWSER,
 			user_status: Constants.USER_STATUS.LOGGED_OUT,
 			user_status_loading: false,
 			user_id: null,
@@ -60,11 +60,16 @@ class App extends React.Component {
 			searchResultsErrorMessage: null,
 			searchResultsBackgroundDataRequestStatus:
 				Constants.DATA_REQUEST_STATUS.NONE_MADE,
-			artefact_all_collections: []
+			artefact_all_collections: [],
+			exhibition_id: null,
+			exibition_artefacts: [],
 		};
 
 		this.handleClick = this.handleClick.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.regularTasks = this.regularTasks.bind(this);
+
+		this.regularTasks();
 	}
 
 	stateReset() {
@@ -94,7 +99,8 @@ class App extends React.Component {
 			searchResultsProcessedData: [],
 			searchResultsErrorMessage: null,
 			searchResultsBackgroundDataRequestStatus:
-				Constants.DATA_REQUEST_STATUS.NONE_MADE
+				Constants.DATA_REQUEST_STATUS.NONE_MADE,
+			exhibition_id: null
 		});
 	}
 
@@ -207,7 +213,8 @@ class App extends React.Component {
 
 		var category =
 			event.target.className === Constants.SEARCH_CELL ||
-			event.target.className === Constants.SEARCH_PREVIEW_IMAGE
+			event.target.className === Constants.SEARCH_PREVIEW_IMAGE ||
+			event.target.className === Constants.EXHIBITION_LIST_CELL
 				? event.target.className
 				: event.target.id;
 		category =
@@ -611,40 +618,49 @@ class App extends React.Component {
 			}
 			break;
 
-		case Constants.ARTEFACT_PREVIEW_IMAGE:
-			console.log('image clicked! ' + event.target.id);
-			var tempData = this.state.singleArtefactProcessedData;
-			tempData.objectPrimaryImageURL = event.target.src;
-			this.setState({
-				singleArtefactProcessedData: tempData
-			});
-			break;
-
-		case Constants.EXHIBITION_FIND_ALL_BUTTON:
-			console.log('test_firing...');
-			this.setState(
-				{
-					//user_status: Constants.USER_STATUS.REQUEST_PENDING
-					user_status_loading: true
+		case Constants.EXHIBITION_LIST_CELL:
+			var exhibition_id = event.target.id.substring(
+				event.target.id.indexOf(Constants.EXHIBITION_LIST_CELL) +
+						Constants.EXHIBITION_LIST_CELL.length +
+						1
+			);
+			console.log(
+				'worked! NEW EXHIBITION ID:' +
+						exhibition_id +
+						', STATE EXHIBITION ID: ' +
+						this.state.exhibition_id
+			);
+			if (exhibition_id !== this.state.exhibition_id) {
+				this.setState({
+					exhibition_id: exhibition_id
 				},
 				() => {
-					LocalDataAccess.find_all_exhibitions().then(returned_data => {
+					//console.log(exhibition_id);
+					LocalDataAccess.load_exhibition_artefacts(exhibition_id).then(returned_data => {
 						if (
 							returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS
 						) {
 							this.setState({
-								artefact_all_collections: returned_data.exhibitions_data
+								status_message: returned_data.internal_data,
+								exibition_artefacts: returned_data.exhibition_artefacts
 							});
 						} else {
-							console.log('artefact collection error');
-							return 'artefact collection error';
+							console.log('exhibition artefacts collection error');
+							return 'exhibition artefacts collection error';
 						}
 					});
-				}
-			);
+				});
+			} else {
+				console.log(
+					'Exhibition ' +
+							exhibition_id +
+							' already displayed - so not reloading.'
+				);
+			}
 			break;
 
 		default:
+			console.log('Unexpected object clicked!');
 			break;
 		}
 	}
@@ -892,6 +908,7 @@ class App extends React.Component {
 				<ExhibitionBrowser
 					status_message={this.state.status_message}
 					artefact_all_collections={this.state.artefact_all_collections}
+					exibition_artefacts={this.state.exibition_artefacts}
 					onClick={this.handleClick}
 				/>
 			);
@@ -933,6 +950,24 @@ class App extends React.Component {
 		default:
 			break;
 		}
+	}
+
+	regularTasks() {
+		this.refreshAllExhibitions();
+		setInterval(this.refreshAllExhibitions.bind(this), 60000);
+	}
+
+	refreshAllExhibitions() {
+		LocalDataAccess.find_all_exhibitions().then(returned_data => {
+			if (returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS) {
+				this.setState({
+					artefact_all_collections: returned_data.exhibitions_data
+				});
+			} else {
+				console.log('artefact collection error');
+				return 'artefact collection error';
+			}
+		});
 	}
 
 	render() {

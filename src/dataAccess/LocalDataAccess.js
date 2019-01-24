@@ -169,3 +169,31 @@ export async function find_all_exhibitions() {
 		});
 	return returnData;
 }
+
+export async function load_exhibition_artefacts(id) {
+	console.log('loading artefacts in exhibition: ' + id);
+	const url = new URL('http://localhost:3001/api/exhibitionArtefacts');
+	const params = { id: id };
+	url.search = new URLSearchParams(params);
+
+	const returnData = await fetch(url, {
+		method: 'GET', // or 'PUT'
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	})
+		.then(data => data.json())
+		.then(res => {
+			console.log(
+				'Collected ' +
+					res.exhibition_artefacts.length +
+					' artefacts in Exhibition'
+			);
+			return {
+				result: Constants.DATA_REQUEST_STATUS.SUCCESS,
+				exhibition_artefacts: res.exhibition_artefacts,
+				internal_data: res.body
+			};
+		});
+	return returnData;
+}
