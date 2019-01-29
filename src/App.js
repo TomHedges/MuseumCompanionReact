@@ -60,8 +60,9 @@ class App extends React.Component {
 			searchResultsErrorMessage: null,
 			searchResultsBackgroundDataRequestStatus:
 				Constants.DATA_REQUEST_STATUS.NONE_MADE,
-			artefact_all_collections: [],
+			exhibitions_all_collections: [],
 			exhibition_id: null,
+			exibition_details: [],
 			exibition_artefacts: [],
 		};
 
@@ -100,7 +101,6 @@ class App extends React.Component {
 			searchResultsErrorMessage: null,
 			searchResultsBackgroundDataRequestStatus:
 				Constants.DATA_REQUEST_STATUS.NONE_MADE,
-			exhibition_id: null
 		});
 	}
 
@@ -624,15 +624,20 @@ class App extends React.Component {
 						Constants.EXHIBITION_LIST_CELL.length +
 						1
 			);
+			var tempArrayID = event.target.id.substring(0,
+					event.target.id.indexOf("_")
+				);
 			console.log(
 				'worked! NEW EXHIBITION ID:' +
 						exhibition_id +
 						', STATE EXHIBITION ID: ' +
-						this.state.exhibition_id
+						this.state.exhibition_id + ', array ID: ' + tempArrayID
 			);
 			if (exhibition_id !== this.state.exhibition_id) {
+				const tempArray = this.state.exhibitions_all_collections[tempArrayID];
 				this.setState({
-					exhibition_id: exhibition_id
+					exhibition_id: exhibition_id,
+					exibition_details: tempArray,
 				},
 				() => {
 					//console.log(exhibition_id);
@@ -907,8 +912,9 @@ class App extends React.Component {
 			return (
 				<ExhibitionBrowser
 					status_message={this.state.status_message}
-					artefact_all_collections={this.state.artefact_all_collections}
+					exhibitions_all_collections={this.state.exhibitions_all_collections}
 					exibition_artefacts={this.state.exibition_artefacts}
+					exibition_details={this.state.exibition_details}
 					onClick={this.handleClick}
 				/>
 			);
@@ -954,15 +960,15 @@ class App extends React.Component {
 
 	regularTasks() {
 		this.refreshAllExhibitions();
-		setInterval(this.refreshAllExhibitions.bind(this), 60000);
 	}
 
 	refreshAllExhibitions() {
 		LocalDataAccess.find_all_exhibitions().then(returned_data => {
 			if (returned_data.result === Constants.DATA_REQUEST_STATUS.SUCCESS) {
 				this.setState({
-					artefact_all_collections: returned_data.exhibitions_data
+					exhibitions_all_collections: returned_data.exhibitions_data
 				});
+				setTimeout(this.refreshAllExhibitions.bind(this), 60000);
 			} else {
 				console.log('artefact collection error');
 				return 'artefact collection error';

@@ -9,12 +9,13 @@ class ExhibitionBrowser extends React.Component {
 				<h1>Exhibition Browser</h1>
 				<h2>Table of Exhibitions</h2>
 				<TableOfExhibitions
-					artefact_all_collections={this.props.artefact_all_collections}
+					exhibitions_all_collections={this.props.exhibitions_all_collections}
 					onClick={this.props.onClick}
 				/>
 				<h2>Exhibition Details</h2>
 				<ExhibitionSummary
 					exibition_artefacts={this.props.exibition_artefacts}
+					exibition_details={this.props.exibition_details}
 					onClick={this.props.onClick}
 				/>
 			</div>
@@ -23,7 +24,7 @@ class ExhibitionBrowser extends React.Component {
 }
 
 function TableOfExhibitions(props) {
-	const rows = props.artefact_all_collections.map((collection, id) => {
+	const rows = props.exhibitions_all_collections.map((collection, id) => {
 		return (
 			<AllExhibitionsTableRow
 				key={collection.UniqueID}
@@ -80,12 +81,12 @@ function ExhibitionSummary(props) {
 	});
 	return (
 		<>
-			<h3>Name</h3>
-			<p>UniqueID</p>
+			<h3>{props.exibition_details.Name}</h3>
+			<p>{props.exibition_details.UniqueID}</p>
 			<br />
-			<p>Description</p>
+			<p>{props.exibition_details.Description}</p>
 			<br />
-			<p>Introduction</p>
+			<p>{props.exibition_details.Introduction}</p>
 			<br />
 			<table>
 				<tbody>
