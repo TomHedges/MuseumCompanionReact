@@ -1,4 +1,5 @@
 import React from 'react';
+import ArtefactDetails from '../components/ArtefactDetails.js';
 import * as Constants from '../constants/Constants.js';
 import PropTypes from 'prop-types';
 
@@ -12,11 +13,18 @@ class ExhibitionBrowser extends React.Component {
 					exhibitions_all_collections={this.props.exhibitions_all_collections}
 					onClick={this.props.onClick}
 				/>
-				<h2>Exhibition Details</h2>
 				<ExhibitionSummary
 					exibition_artefacts={this.props.exibition_artefacts}
 					exibition_details={this.props.exibition_details}
+					dataRequestStatus={this.props.singleArtefactDataRequestStatus}
 					onClick={this.props.onClick}
+				/>
+				<ArtefactDetails
+					dataRequestStatus={this.props.dataRequestStatus}
+					source={this.props.source}
+					objectData={this.props.objectData}
+					errorMessage={this.props.errorMessage}
+					onClick={this.props.handleClick}
 				/>
 			</div>
 		);
@@ -71,36 +79,46 @@ function AllExhibitionsTableRow(props) {
 }
 
 function ExhibitionSummary(props) {
-	const rows = props.exibition_artefacts.map(collection => {
+	if (
+		props.exibition_details &&
+		props.exibition_details.hasOwnProperty('UniqueID')
+	) {
+		const rows = props.exibition_artefacts.map((collection, index) => {
+			return (
+				<ExhibitionTableRow
+					key={collection.ArtefactSequence}
+					collection={collection}
+					index={index}
+					onClick={props.onClick}
+				/>
+			);
+		});
 		return (
-			<ExhibitionTableRow
-				key={collection.ArtefactSequence}
-				collection={collection}
-			/>
+			<>
+				<h2>Exhibition Details</h2>
+				<h3>{props.exibition_details.Name}</h3>
+				<p>{props.exibition_details.UniqueID}</p>
+				<br />
+				<p>{props.exibition_details.Description}</p>
+				<br />
+				<p>{props.exibition_details.Introduction}</p>
+				<br />
+				<table>
+					<tbody>
+						<tr>
+							<th>Image</th>
+							<th>Name</th>
+							<th>Origin</th>
+							<th>Description</th>
+						</tr>
+						{rows}
+					</tbody>
+				</table>
+			</>
 		);
-	});
-	return (
-		<>
-			<h3>{props.exibition_details.Name}</h3>
-			<p>{props.exibition_details.UniqueID}</p>
-			<br />
-			<p>{props.exibition_details.Description}</p>
-			<br />
-			<p>{props.exibition_details.Introduction}</p>
-			<br />
-			<table>
-				<tbody>
-					<tr>
-						<th>Image</th>
-						<th>Name</th>
-						<th>Origin</th>
-						<th>Description</th>
-					</tr>
-					{rows}
-				</tbody>
-			</table>
-		</>
-	);
+	} else {
+		return null;
+	}
 }
 
 function ExhibitionTableRow(props) {
@@ -109,22 +127,29 @@ function ExhibitionTableRow(props) {
 		props.collection.SourceCollection +
 		'artefact ' +
 		props.collection.ArtefactID;
+	const cell_id =
+		props.index +
+		'_' +
+		Constants.SEARCH_CELL +
+		'_' +
+		props.collection.ArtefactID;
+	const institution_name = Constants.SOURCES[props.collection.SourceCollection];
 	return (
-		<tr>
-			<td id="" className={Constants.EXHIBITION_LIST_CELL}>
+		<tr onClick={props.onClick}>
+			<td id={cell_id} className={Constants.EXHIBITION_CONTENTS_CELL}>
 				<img
 					className={Constants.SEARCH_PREVIEW_IMAGE}
 					src={props.collection.PrimaryImageURL}
 					alt={imageAlt}
 				/>
 			</td>
-			<td id="" className={Constants.EXHIBITION_LIST_CELL}>
+			<td id={cell_id} className={Constants.EXHIBITION_CONTENTS_CELL}>
 				{props.collection.Name}
 			</td>
-			<td id="" className={Constants.EXHIBITION_LIST_CELL}>
-				{props.collection.SourceCollection}, {props.collection.ArtefactID}
+			<td id={cell_id} className={Constants.EXHIBITION_CONTENTS_CELL}>
+				{institution_name}, {props.collection.ArtefactID}
 			</td>
-			<td id="" className={Constants.EXHIBITION_LIST_CELL}>
+			<td id={cell_id} className={Constants.EXHIBITION_CONTENTS_CELL}>
 				{props.collection.Description}
 			</td>
 		</tr>

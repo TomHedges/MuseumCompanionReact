@@ -62,7 +62,7 @@ class App extends React.Component {
 				Constants.DATA_REQUEST_STATUS.NONE_MADE,
 			exhibitions_all_collections: [],
 			exhibition_id: null,
-			exibition_details: [],
+			exibition_details: {},
 			exibition_artefacts: [],
 		};
 
@@ -209,12 +209,13 @@ class App extends React.Component {
 		//console.log('handleClick fired by: ' + event.type);
 		//console.log('handleClick fired by: ' + event.target);
 		console.log('handleClick fired by: ' + event.target.id);
-		//console.log('handleClick fired by: ' + event.target.className);
+		console.log('handleClick fired by: ' + event.target.className);
 
 		var category =
 			event.target.className === Constants.SEARCH_CELL ||
 			event.target.className === Constants.SEARCH_PREVIEW_IMAGE ||
-			event.target.className === Constants.EXHIBITION_LIST_CELL
+			event.target.className === Constants.EXHIBITION_LIST_CELL ||
+			event.target.className === Constants.EXHIBITION_CONTENTS_CELL
 				? event.target.className
 				: event.target.id;
 		category =
@@ -593,11 +594,14 @@ class App extends React.Component {
 
 		case Constants.SEARCH_CELL:
 		case Constants.SEARCH_PREVIEW_IMAGE:
-			var artefact_id = event.target.id.substring(
+		case Constants.EXHIBITION_CONTENTS_CELL:
+			const artefact_id = event.target.id.substring(
 				event.target.id.indexOf(Constants.SEARCH_CELL) +
 						Constants.SEARCH_CELL.length +
 						1
 			);
+			const temp_institution = this.state.exibition_artefacts[event.target.id.substring(0, event.target.id.indexOf("_"))].SourceCollection;
+			//console.log(temp_institution);
 			console.log('worked! ' + artefact_id);
 			if (artefact_id !== this.state.artefactId) {
 				this.setState({
@@ -606,9 +610,10 @@ class App extends React.Component {
 					singleArtefactErrorMessage: null,
 					artefactId: artefact_id
 				});
+				const search_source = this.state.lastSearchSource ? this.state.lastSearchSource : temp_institution;
 				this.requestData(
 					Constants.REQUEST_TYPE.SINGLE_ARTEFACT,
-					this.state.lastSearchSource,
+					search_source,
 					artefact_id
 				);
 			} else {
@@ -915,6 +920,10 @@ class App extends React.Component {
 					exhibitions_all_collections={this.state.exhibitions_all_collections}
 					exibition_artefacts={this.state.exibition_artefacts}
 					exibition_details={this.state.exibition_details}
+					dataRequestStatus={this.state.singleArtefactDataRequestStatus}
+					source={this.state.lastSearchSource}
+					objectData={this.state.singleArtefactProcessedData}
+					errorMessage={this.state.singleArtefactErrorMessage}
 					onClick={this.handleClick}
 				/>
 			);
